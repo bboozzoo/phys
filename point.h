@@ -1,33 +1,32 @@
 #ifndef __POINT_H__
 #define __POINT_H__
+#include <boost/numeric/ublas/vector.hpp>
+using namespace boost::numeric;
 namespace phys {
 
 class point 
 {
 	public:
-		point(float mass, float x, float y, float z) 
-			: m_mass(mass), m_x(x), m_y(y), m_z(0) 
-		{
-		}
-		point(float mass, float x, float y)
-			: m_mass(mass), m_x(x), m_y(y), m_z(0)
-		{
-		}
-		point(const point & orig)
-		{	
-			this->m_x = orig.m_x;
-			this->m_y = orig.m_y;
-			this->m_z = orig.m_z;
-			this->m_mass = orig.m_mass;
-		}
-		virtual ~point() 
-		{
-		}
+		point(double mass, double x, double y, double z = 0);
+		virtual ~point();
+        ublas::vector<double> & get_pos()
+        {
+            return m_pos;
+        }
+        ublas::vector<double> & get_velocity()
+        {
+            return m_velocity;
+        }
+        ublas::vector<double> & get_force()
+        {
+            return m_force;
+        }
 	private:
-		float m_mass;
-		float m_x;
-		float m_y;
-		float m_z;
+		double m_mass;
+        double m_1_over_mass;
+        ublas::vector<double> m_pos;
+        ublas::vector<double> m_velocity;
+        ublas::vector<double> m_force;
 };
 
 }
