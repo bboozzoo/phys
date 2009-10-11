@@ -93,6 +93,9 @@ simulation::calc(double delta_ms)
         ublas::vector<double> & vel = p->get_velocity();
         ublas::vector<double> & force = p->get_force();
         ublas::vector<double> & pos = p->get_pos();
+        if (!m_coord.visible(pos))
+            continue;
+
         ublas::vector<double> acc(3);
         LOG(2, "f: " << force);
         LOG(2, "p: " << pos);
@@ -102,8 +105,6 @@ simulation::calc(double delta_ms)
         pos += vel * delta_ms;
         vel += acc * delta_ms;
         LOG(2, "v: " << vel << " f: " << force << " p: " << pos);
-        if (!m_coord.visible(pos))
-            exit(1);
     }
 }
 
@@ -123,6 +124,16 @@ simulation::setup()
     p = new point(0.1, 0, 300, 0);
     if (p != NULL) 
     {
+        apply_gravity(p);
+        m_points.push_back(p);
+    }
+    p = new point(100, 100, 220, 0);
+    if (p != NULL) 
+    {
+        ublas::vector<double> & v = p->get_velocity();
+        v(0) = -50.0;
+        v(1) = 10;
+
         apply_gravity(p);
         m_points.push_back(p);
     }
