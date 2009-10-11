@@ -20,10 +20,27 @@ void gfx_SDL::init()
 
 	video_info = SDL_GetVideoInfo();
 	video_flags = SDL_SWSURFACE | SDL_DOUBLEBUF;
-	surface = SDL_SetVideoMode(VIDEO_W, VIDEO_H, VIDEO_BPP, video_flags);
+	m_surface = SDL_SetVideoMode(VIDEO_W, VIDEO_H, VIDEO_BPP, video_flags);
 
 }
 
+void gfx_SDL::update()
+{
+    SDL_Flip(m_surface);
+}
 
+void gfx_SDL::draw()
+{
 
+}
+
+uint32_t gfx_SDL::get_width()
+{
+    return m_surface->w;
+}
+
+uint32_t gfx_SDL::get_height()
+{
+    return m_surface->h;
+}
 }

@@ -5,6 +5,7 @@
 #include "gfx.h"
 
 using namespace boost::numeric;
+
 namespace phys {
 
 class coord 
@@ -16,7 +17,17 @@ class coord
         void init(double width, double height, double sc_width, double sc_height);
         void translate_inside(ublas::vector<double> & v);
         void draw(gfx * g);
+        bool visible(ublas::vector<double> & v);
 	private:
+        typedef enum {
+            LINE_H = 0,
+            LINE_V,
+        } line_type_t;
+
+        void hline(gfx * g);
+        void vline(gfx * g);
+        void line(gfx * g, ublas::vector<double> & start, ublas::vector<double> & end, line_type_t t);
+        void ticks(gfx * g);
         double m_width;
         double m_height;
         double m_sc_width;

@@ -18,6 +18,14 @@ class gfx_SDL : public gfx
 		}
 
 		virtual void init();
+        virtual void update();
+        virtual void draw();
+        virtual uint32_t get_width();
+        virtual uint32_t get_height();
+        SDL_Surface * get_ctx()
+        {
+            return m_surface;
+        }
 	private:
 		SDL_Surface * m_surface;
 };
