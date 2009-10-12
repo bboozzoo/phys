@@ -2,6 +2,7 @@
 #include <SDL/SDL_gfxPrimitives.h>
 #include "system.h"
 #include "sim.h"
+#include "plane.h"
 #include "gfx_sdl.h"
 #include "log.h"
 
@@ -91,29 +92,62 @@ simulation::calc(double delta_ms)
     {
         point * p = (*it);
         ublas::vector<double> & vel = p->get_velocity();
-        ublas::vector<double> & force = p->get_force();
+        ublas::vector<double> force(3);
         ublas::vector<double> & pos = p->get_pos();
-        if (!m_coord.visible(pos))
-            continue;
+	ublas::vector<double> & plane_p = m_plane.get_p();
+	ublas::vector<double> tmp_pos(3);
+	ublas::vector<double> tmp(3);
+	ublas::vector<double> acc(3);
+	LOG(2, "p: " << pos);
+	LOG(2, "v: " << vel);
+	for (int i = 0 ; i < 3; i++)
+		force(i) = 0;
+	apply_gravity(p, force);
 
-        ublas::vector<double> acc(3);
-        LOG(2, "f: " << force);
-        LOG(2, "p: " << pos);
-        LOG(2, "v: " << vel);
-        acc = force * p->get_1_over_mass();
-        LOG(2, "a: " << acc);
-        pos += vel * delta_ms;
-        vel += acc * delta_ms;
-        LOG(2, "v: " << vel << " f: " << force << " p: " << pos);
+	tmp_pos = pos + (vel * delta_ms);
+
+	tmp = tmp_pos - plane_p;
+	double prod = ublas::inner_prod(tmp, m_plane.get_normal());
+	LOG(1, "tmp_pos: " << pos << " tmp: " << tmp << " prod: " << prod);
+	if (prod < 1.0) /* collision */
+	{
+		ublas::vector<double> vn(3);
+		ublas::vector<double> vt(3);
+		double len_vn;
+		LOG(1, "got collision");
+		LOG(1, "v: " << vel);
+		vn = ublas::inner_prod(vel, m_plane.get_normal()) * (m_plane.get_normal());
+		len_vn = norm_2(vn);
+		LOG(1, "len vn: " << len_vn);
+		if (len_vn < 0.1)
+		{
+			LOG(1, "normal small");
+			for (int i = 0; i < vn.size(); i++)
+				vn(i) = 0;
+		}
+		LOG(1, "vn: " << vn);
+		vt = vel - vn;
+		LOG(1, "vt: " << vt);
+		vel = vt - 0.8 * vn;
+		LOG(1, "vel: " << vel);
+		LOG(1, "pos: " << pos);
+    	} 
+	else /* no collision */
+	{
+		pos = tmp_pos;	
+		acc = force * p->get_1_over_mass();
+		LOG(2, "a: " << acc);
+		vel += acc * delta_ms;
+		LOG(2, "v: " << vel << " f: " << force << " p: " << pos);
+	}
     }
 }
 
 void
-simulation::apply_gravity(point * p)
+simulation::apply_gravity(point * p, ublas::vector<double> & f)
 {
-    ublas::vector<double> & force = p->get_force();
-    force = p->get_mass() * m_accel_gravity;
-    LOG(1, "appply gravity, g: " << m_accel_gravity << " f: " << force << " m: " << p->get_mass());
+    f += p->get_mass() * m_accel_gravity;
+    LOG(1, "appply gravity, g: " << m_accel_gravity << " f: " << f << " m: " << p->get_mass());
 }
 
 void 
@@ -121,22 +155,34 @@ simulation::setup()
 {
     point * p = NULL;
 
-    p = new point(0.1, 0, 300, 0);
-    if (p != NULL) 
-    {
-        apply_gravity(p);
-        m_points.push_back(p);
-    }
-    p = new point(100, 100, 220, 0);
+    p = new point(0.1, 250, -280, 0);
     if (p != NULL) 
     {
         ublas::vector<double> & v = p->get_velocity();
-        v(0) = -50.0;
-        v(1) = 10;
-
-        apply_gravity(p);
+	v(0) = -10;
         m_points.push_back(p);
     }
+    
+    p = new point(100, -250, -180, 0);
+    if (p != NULL) 
+    {
+        ublas::vector<double> & v = p->get_velocity();
+        v(0) = 5;
+        v(1) = 10;
+        m_points.push_back(p);
+    }
+    ublas::vector<double> p1(3);
+    p1(0) = -400;
+    p1(1) = -300;
+    p1(2) = 0;
+    ublas::vector<double> p2(3);
+    p2(0) = 400;
+    p2(1) = -300;
+    p2(2) = 0;
+
+    LOG(1, "creating plane, p1: " << p1 << " p2: " << p2);
+    m_plane.init(p1, p2);
+
 }
 
 void simulation::finish() 

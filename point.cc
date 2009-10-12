@@ -5,7 +5,7 @@ namespace phys
 {
 
 point::point(double mass, double x, double y, double z)
-    : m_mass(mass), m_pos(3), m_velocity(3), m_force(3)
+    : m_mass(mass), m_pos(3), m_velocity(3)
 {
     if (mass == 0)
         m_mass = 1;
@@ -18,10 +18,9 @@ point::point(double mass, double x, double y, double z)
     for (int i = 0; i < 3; i++)
     {
         m_velocity(i) = 0;
-        m_force(i) = 0;
     }
 
-    LOG(2, "m: " << m_mass << " p: " << m_pos << " v: " << m_velocity << " f: " << m_force);
+    LOG(2, "m: " << m_mass << " p: " << m_pos << " v: " << m_velocity);
 }
 
 point::~point()
