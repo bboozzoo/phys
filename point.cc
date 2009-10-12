@@ -5,7 +5,7 @@ namespace phys
 {
 
 point::point(double mass, double x, double y, double z)
-    : m_mass(mass), m_pos(3), m_velocity(3)
+    : m_mass(mass), m_pos(2), m_velocity(2)
 {
     if (mass == 0)
         m_mass = 1;
@@ -13,9 +13,8 @@ point::point(double mass, double x, double y, double z)
     
     m_pos(0) = x;
     m_pos(1) = y;
-    m_pos(2) = z;
 
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 2; i++)
     {
         m_velocity(i) = 0;
     }

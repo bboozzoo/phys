@@ -9,7 +9,7 @@ namespace phys
     
 coord::coord()
     : m_width(0), m_height(0), m_sc_width(0), m_sc_height(0),
-      m_offs(3)
+      m_offs(2)
 {
 }
 
@@ -25,7 +25,6 @@ coord::init(double width, double height, double sc_width, double sc_height)
     LOG(3, "initializing, w: " << width << " h: " << height);
     m_offs(0) = sc_width / 2.0;
     m_offs(1) = -sc_height / 2.0;
-    m_offs(2) = 0;
     LOG(3, "offs: " << m_offs);
 }
 
