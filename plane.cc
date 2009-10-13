@@ -94,8 +94,8 @@ plane::get_p2()
 bool
 plane::is_inside(ublas::vector<double> & p) 
 {
-    if (p(0) >= (*m_start_x)(0) && p(0) <= (*m_end_x)(0))
-        if (p(1) >= (*m_start_y)(1) && p(1) <= (*m_end_y)(1))
+    if ((p(0) >= (*m_start_x)(0) && p(0) <= (*m_end_x)(0)) || 
+        (p(1) >= (*m_start_y)(1) && p(1) <= (*m_end_y)(1)))
             return true;
     return false;           
 }

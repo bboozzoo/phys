@@ -1,6 +1,6 @@
 TARGET=phys
 SRCS=main.cc bin.cc system.cc gfx_sdl.cc input_sdl.cc sim.cc point.cc coord.cc log.cc \
-     plane.cc
+     plane.cc event.cc
 CFLAGS=-ggdb -g3 -Wall -std=gnu++0x `pkg-config --cflags sdl`
 LDFLAGS=`pkg-config --libs sdl` -lSDL_gfx -lboost_program_options
 

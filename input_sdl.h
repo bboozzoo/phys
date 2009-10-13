@@ -10,7 +10,7 @@ class input_SDL : public input
     public:
         input_SDL();
         ~input_SDL();
-        uint32_t poll();
+        void poll(event & e);
         uint32_t get_ticks();
 
 };

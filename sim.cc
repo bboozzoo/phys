@@ -4,6 +4,7 @@
 #include "sim.h"
 #include "plane.h"
 #include "gfx_sdl.h"
+#include "event.h"
 #include "log.h"
 
 namespace phys
@@ -37,10 +38,10 @@ simulation::run()
 
     while(true)
     {
-        uint32_t ev = 0;
+        event ev = 0;
         double now = 0;
-        ev = m_input->poll();
-        if (ev == -1)
+        m_input->poll(ev);
+        if (ev == event::EVENT_QUIT)
             break;
         now = ((double)SDL_GetTicks()) / 1000.0;
         t_delta = now - m_time;

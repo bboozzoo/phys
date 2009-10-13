@@ -11,28 +11,32 @@ input_SDL::input_SDL()
 input_SDL::~input_SDL()
 {
 }
-uint32_t input_SDL::poll()
+
+void
+input_SDL::poll(event & e)
 {
-    uint32_t ret = 0;
+    event_type_t etype = event::EVENT_NONE;
+    event_info * einfo = NULL;
     SDL_Event e;
     while (SDL_PollEvent(&e)) 
     {
         switch(e.type) 
         {
             case SDL_KEYDOWN:
+                e.set_type(event::EVENT_KEY);
                 ret = static_cast<uint32_t>(e.key.keysym.sym);
                 break;
             case SDL_QUIT:
-                ret = -1; /* 0xfffff...*/
+                e.set_type(event::EVENT_QUIT);
                 break;
             default:
                 break;
         }
     }
-    return ret;
 }
 
-uint32_t input_SDL::get_ticks()
+uint32_t 
+input_SDL::get_ticks()
 {
     return SDL_GetTicks();
 }
