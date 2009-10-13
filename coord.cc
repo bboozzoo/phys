@@ -121,17 +121,23 @@ coord::ticks(gfx * g)
 void 
 coord::line(gfx * g, ublas::vector<double> & start, ublas::vector<double> & end, line_type_t t)
 {
-    gfx_SDL * gf = dynamic_cast<gfx_SDL*>(g);
-    SDL_Surface * surf = gf->get_ctx();  
-    LOG(4, "line " << ((t == LINE_H) ? "H" : "V") << " before start: " << start << " point 2: " << end);
-    translate_inside(start);
-    translate_inside(end);
-    LOG(4, "line after start: " << start << " point 2: " << end);
-    if (t == LINE_H)
-        hlineColor(surf, start(0), end(0), start(1), 0x55555555);
-    else
-        vlineColor(surf, start(0), start(1), end(1), 0x55555555);
-
+    try 
+    {
+        gfx_SDL * gf = dynamic_cast<gfx_SDL*>(g);
+        SDL_Surface * surf = gf->get_ctx();  
+        LOG(4, "line " << ((t == LINE_H) ? "H" : "V") << " before start: " << start << " point 2: " << end);
+        translate_inside(start);
+        translate_inside(end);
+        LOG(4, "line after start: " << start << " point 2: " << end);
+        if (t == LINE_H)
+            hlineColor(surf, start(0), end(0), start(1), 0x55555555);
+        else
+            vlineColor(surf, start(0), start(1), end(1), 0x55555555);
+    }
+    catch (std::bad_cast & b)
+    {
+        std::cerr << "exception " << b.what() << std::endl;
+    }
 }
 
 bool

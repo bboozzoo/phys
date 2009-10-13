@@ -38,17 +38,20 @@ simulation::run()
 
     while(true)
     {
-        event ev = 0;
+        event ev;
         double now = 0;
+
         m_input->poll(ev);
         if (ev == event::EVENT_QUIT)
             break;
+
         now = ((double)SDL_GetTicks()) / 1000.0;
         t_delta = now - m_time;
-        LOG(1, "delta: : " << t_delta << "ms, now: " << now << "ms, prev: " << m_time << "ms");
+        LOG(2, "delta: : " << t_delta << "ms, now: " << now << "ms, prev: " << m_time << "ms");
+
         if (t_delta >= 0.001) 
         {
-            LOG(1, "--- update ---");
+            LOG(2, "--- update ---");
             calc(t_delta);
             m_time = now;
         }
@@ -61,31 +64,39 @@ simulation::run()
 void 
 simulation::draw() 
 {
-    gfx_SDL * g = dynamic_cast<gfx_SDL*>(m_gfx);
-    SDL_Surface * surf = NULL;
-    std::list<point*>::iterator it; 
-    if (g == NULL)
-        return;
-
-    surf = g->get_ctx();
-    boxColor(surf, 0, 0, surf->w - 1, surf->h - 1, 0x000000ff);
-    m_coord.draw(m_gfx);
-    for (it = m_points.begin(); it != m_points.end(); it++)
+    try 
     {
-        ublas::vector<double> v ((*it)->get_pos());
-        m_coord.translate_inside(v);
-        filledCircleColor(surf, v(0), v(1), 1, 0xffffffff);
+        gfx_SDL * g = dynamic_cast<gfx_SDL*>(m_gfx);
+        SDL_Surface * surf = NULL;
+        std::list<point*>::iterator it; 
+        if (g == NULL)
+            return;
+
+        surf = g->get_ctx();
+        boxColor(surf, 0, 0, surf->w - 1, surf->h - 1, 0x000000ff);
+        m_coord.draw(m_gfx);
+        for (it = m_points.begin(); it != m_points.end(); it++)
+        {
+            ublas::vector<double> v ((*it)->get_pos());
+            m_coord.translate_inside(v);
+            filledCircleColor(surf, v(0), v(1), 1, 0xffffffff);
+        }
+        ublas::vector<double> p1 = m_plane.get_p1();
+        ublas::vector<double> p2 = m_plane.get_p2();
+        m_coord.translate_inside(p1);
+        m_coord.translate_inside(p2);
+        lineColor(surf, p1(0), p1(1), p2(0), p2(1), 0xff0000ff);
+        /*
+        filledCircleColor(surf, 100, 100, 10, 0xffffffff);
+        filledCircleColor(surf, 0, 0, 10, 0xffffffff);
+        filledCircleColor(surf, 640, 480, 10, 0xffffffff);
+        */
+    } 
+    catch (std::bad_cast & b)
+    {
+        std::cerr << "exception " << b.what() << std::endl;
+        throw;
     }
-    ublas::vector<double> p1 = m_plane.get_p1();
-    ublas::vector<double> p2 = m_plane.get_p2();
-    m_coord.translate_inside(p1);
-    m_coord.translate_inside(p2);
-    lineColor(surf, p1(0), p1(1), p2(0), p2(1), 0xff0000ff);
-    /*
-    filledCircleColor(surf, 100, 100, 10, 0xffffffff);
-    filledCircleColor(surf, 0, 0, 10, 0xffffffff);
-    filledCircleColor(surf, 640, 480, 10, 0xffffffff);
-    */
 }
 
 void 
@@ -114,37 +125,37 @@ simulation::calc(double delta_ms)
         double distance = 0;
         if (inside)
             distance = ublas::inner_prod(tmp_pos, m_plane.get_nn()) + m_plane.get_p();
-        LOG(1, "tmp_pos: " << tmp_pos << " pos: " << pos << " prod: " << distance);
+        LOG(2, "tmp_pos: " << tmp_pos << " pos: " << pos << " prod: " << distance);
         if (inside == true && std::abs(distance) < 1.0) /* collision */
         {
             ublas::vector<double> vn(2);
             ublas::vector<double> vt(2);
             double len_vn;
-            LOG(1, "got collision");
-            LOG(1, "v: " << vel);
+            LOG(2, "got collision");
+            LOG(2, "v: " << vel);
             vn = ublas::inner_prod(vel, m_plane.get_nn()) * (m_plane.get_nn());
             len_vn = norm_2(vn);
-            LOG(1, "len vn: " << len_vn);
+            LOG(2, "len vn: " << len_vn);
             if (len_vn < 0.1)
             {
                 LOG(1, "normal small");
-                for (int i = 0; i < vn.size(); i++)
+                for (size_t i = 0; i < vn.size(); i++)
                     vn(i) = 0;
             }
-            LOG(1, "vn: " << vn);
+            LOG(2, "vn: " << vn);
             vt = vel - vn;
-            LOG(1, "vt: " << vt);
+            LOG(2, "vt: " << vt);
             vel = vt - 0.8 * vn;
-            LOG(1, "vel: " << vel);
-            LOG(1, "pos: " << pos);
+            LOG(2, "vel: " << vel);
+            LOG(2, "pos: " << pos);
         } 
         else /* no collision */
         {
             pos = tmp_pos;	
             acc = force * p->get_1_over_mass();
-            LOG(2, "a: " << acc);
+            LOG(3, "a: " << acc);
             vel += acc * delta_ms;
-            LOG(2, "v: " << vel << " f: " << force << " p: " << pos);
+            LOG(3, "v: " << vel << " f: " << force << " p: " << pos);
         }
     }
 }
@@ -153,39 +164,41 @@ void
 simulation::apply_gravity(point * p, ublas::vector<double> & f)
 {
     f += p->get_mass() * m_accel_gravity;
-    LOG(1, "appply gravity, g: " << m_accel_gravity << " f: " << f << " m: " << p->get_mass());
+    LOG(2, "appply gravity, g: " << m_accel_gravity << " f: " << f << " m: " << p->get_mass());
 }
 
 void 
 simulation::setup()
 {
-    point * p = NULL;
-
-    p = new point(0.1, 100, 0);
-    if (p != NULL) 
+    try
     {
-        ublas::vector<double> & v = p->get_velocity();
-	v(0) = -10;
+        point * p = NULL;
+
+        p = new point(0.1, 100, 0);
+        ublas::vector<double> & v1 = p->get_velocity();
+        v1(0) = -10;
         m_points.push_back(p);
-    }
 
-    p = new point(100, 0, 50);
-    if (p != NULL) 
-    {
-        ublas::vector<double> & v = p->get_velocity();
-/*        v(0) = 5;
+        p = new point(100, 0, 50);
+        ublas::vector<double> & v2 = p->get_velocity();
+    /*        v(0) = 5;
         v(1) = 10;*/
         m_points.push_back(p);
-    }
-    ublas::vector<double> p1(2);
-    p1(0) = -100;
-    p1(1) = -0;
-    ublas::vector<double> p2(2);
-    p2(0) = 200;
-    p2(1) = -50;
+        ublas::vector<double> p1(2);
+        p1(0) = -100;
+        p1(1) = -0;
+        ublas::vector<double> p2(2);
+        p2(0) = 200;
+        p2(1) = -50;
 
-    LOG(1, "creating plane, p1: " << p1 << " p2: " << p2);
-    m_plane.init(p1, p2);
+        LOG(1, "creating plane, p1: " << p1 << " p2: " << p2);
+        m_plane.init(p1, p2);
+    } 
+    catch (std::exception &e) 
+    {
+        std::cerr << "exception" << e.what() << std::endl;
+        throw;
+    }   
 
 }
 

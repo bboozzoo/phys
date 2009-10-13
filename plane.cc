@@ -7,7 +7,7 @@ namespace phys
 plane::plane()
 	: m_p1(2), m_p2(2), m_normal(2), m_c(0), m_n(2), m_p(0)
 {
-	for (int i = 0 ; i < m_normal.size(); i++)
+	for (size_t i = 0 ; i < m_normal.size(); i++)
 	{
 		m_p1(i) = 0;
 		m_p2(i) = 0;

@@ -11,10 +11,8 @@ class input
     public: 
         input() {}
         virtual ~input() {}
-        virtual void event poll(event & e) = 0;
+        virtual void poll(event & e) = 0;
         virtual uint32_t get_ticks() = 0;
-
-
 };
 
 }

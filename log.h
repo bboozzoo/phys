@@ -1,6 +1,7 @@
 #ifndef __LOG_H__
 #define __LOG_H__
 #include <cstdint>
+#include <iostream>
 
 extern uint32_t log_level;
 #define LOG(lvl, x) \

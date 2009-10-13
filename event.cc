@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include "event.h"
 
 namespace phys
@@ -5,52 +6,51 @@ namespace phys
 
 
 event::event()
-    : m_info(NULL), m_type(EVENT_NONE)
+    : m_type(EVENT_NONE)
 {
 }
 
 event::~event()
 {
-    if (m_info != NULL)
-        delete m_info;
 }
 
 event::event(const event & e)
 {
-
+    m_info = e.m_info;
+    m_type = e.m_type;
 }
 
 event_info & 
 event::get_info()
 {
-
+    return *m_info;
 }
 
 bool 
-event::operator==(const event & e, event_type_t etype)
+event::operator==(event_type_t etype)
 {
-
+    if (m_type == etype)
+        return true;
+    return false;
 }
 
 void 
-event::set_type(etype e)
+event::set_type(event_type_t e)
 {
-
+    m_type = e;
 }
 
 void 
-event::set_info(einfo * e)
+event::set_info(event_info_sh_t & e)
 {
-
+    m_info = e;
 }
 
 void 
 event::clear()
 {
-    if (m_info != NULL)
-        delete m_info;
-    m_info = NULL;
-    m_type = EVENT_NONE:
+    m_info.reset();
+    m_type = EVENT_NONE;
 }
 
 
