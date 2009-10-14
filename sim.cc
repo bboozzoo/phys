@@ -64,39 +64,34 @@ simulation::run()
 void 
 simulation::draw() 
 {
-    try 
-    {
-        gfx_SDL * g = dynamic_cast<gfx_SDL*>(m_gfx);
-        SDL_Surface * surf = NULL;
-        std::list<point*>::iterator it; 
-        if (g == NULL)
-            return;
+    gfx_SDL * g = dynamic_cast<gfx_SDL*>(m_gfx);
+    if (g == NULL)
+        return;
 
-        surf = g->get_ctx();
-        boxColor(surf, 0, 0, surf->w - 1, surf->h - 1, 0x000000ff);
-        m_coord.draw(m_gfx);
-        for (it = m_points.begin(); it != m_points.end(); it++)
-        {
-            ublas::vector<double> v ((*it)->get_pos());
-            m_coord.translate_inside(v);
-            filledCircleColor(surf, v(0), v(1), 1, 0xffffffff);
-        }
-        ublas::vector<double> p1 = m_plane.get_p1();
-        ublas::vector<double> p2 = m_plane.get_p2();
-        m_coord.translate_inside(p1);
-        m_coord.translate_inside(p2);
-        lineColor(surf, p1(0), p1(1), p2(0), p2(1), 0xff0000ff);
-        /*
-        filledCircleColor(surf, 100, 100, 10, 0xffffffff);
-        filledCircleColor(surf, 0, 0, 10, 0xffffffff);
-        filledCircleColor(surf, 640, 480, 10, 0xffffffff);
-        */
-    } 
-    catch (std::bad_cast & b)
+    SDL_Surface * surf = NULL;
+    std::list<point*>::iterator it; 
+    if (g == NULL)
+        return;
+
+    surf = g->get_ctx();
+    boxColor(surf, 0, 0, surf->w - 1, surf->h - 1, 0x000000ff);
+    m_coord.draw(m_gfx);
+    for (it = m_points.begin(); it != m_points.end(); it++)
     {
-        std::cerr << "exception " << b.what() << std::endl;
-        throw;
+        ublas::vector<double> v ((*it)->get_pos());
+        m_coord.translate_inside(v);
+        filledCircleColor(surf, v(0), v(1), 1, 0xffffffff);
     }
+    ublas::vector<double> p1 = m_plane.get_p1();
+    ublas::vector<double> p2 = m_plane.get_p2();
+    m_coord.translate_inside(p1);
+    m_coord.translate_inside(p2);
+    lineColor(surf, p1(0), p1(1), p2(0), p2(1), 0xff0000ff);
+    /*
+       filledCircleColor(surf, 100, 100, 10, 0xffffffff);
+       filledCircleColor(surf, 0, 0, 10, 0xffffffff);
+       filledCircleColor(surf, 640, 480, 10, 0xffffffff);
+       */
 }
 
 void 
