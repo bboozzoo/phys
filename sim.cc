@@ -18,6 +18,7 @@ simulation::simulation(gfx * g, input * i)
     width = m_gfx->get_width();
     height = m_gfx->get_height();
     m_coord.init(width, height, width, height);
+    m_bin_set.init(width / 10.0, height / 10.0, width, height);
 
     m_accel_gravity(0) = 0.0;
     m_accel_gravity(1) = -9.81;

@@ -23,7 +23,8 @@ class bin_set
 	public:
 		bin_set();
 		~bin_set();
-		bin & get_bin(ublas::vector<double> & v);
+        void init(double bin_width, double bin_height, double width, double height);
+		bin & get_bin(ublas::vector<double> & coord);
 	private:
 };
 

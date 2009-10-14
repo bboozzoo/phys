@@ -7,6 +7,7 @@
 #include "coord.h"
 #include "point.h"
 #include "plane.h"
+#include "bin.h"
 
 namespace phys
 {
@@ -27,10 +28,11 @@ class simulation
         gfx * m_gfx;
         input * m_input;
         std::list<point *> m_points;
-	plane m_plane;
+        plane m_plane;
         double  m_time;
         coord m_coord;
         ublas::vector<double> m_accel_gravity;
+        bin_set m_bin_set;
 };
 
 }
