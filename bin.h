@@ -4,6 +4,7 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <list>
 #include <cstdint>
+#include "object.h"
 #include "point.h"
 
 namespace phys {
@@ -24,7 +25,7 @@ class bin_set
 		bin_set();
 		~bin_set();
         void init(double bin_width, double bin_height, double width, double height);
-		bin & get_bin(ublas::vector<double> & coord);
+		bin & get_bin(pos_t & coord);
 	private:
 };
 

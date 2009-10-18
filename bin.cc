@@ -20,7 +20,7 @@ bin_set::~bin_set()
 }
 
 bin &
-bin_set::get_bin(ublas::vector<double> & coord)
+bin_set::get_bin(pos_t & coord)
 {
 
 }

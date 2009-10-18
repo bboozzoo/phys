@@ -79,12 +79,12 @@ simulation::draw()
     m_coord.draw(m_gfx);
     for (it = m_points.begin(); it != m_points.end(); it++)
     {
-        ublas::vector<double> v ((*it)->get_pos());
+        pos_t v ((*it)->get_pos());
         m_coord.translate_inside(v);
         filledCircleColor(surf, v(0), v(1), 1, 0xffffffff);
     }
-    ublas::vector<double> p1 = m_plane.get_p1();
-    ublas::vector<double> p2 = m_plane.get_p2();
+    vertex_t p1 = m_plane.get_p1();
+    vertex_t p2 = m_plane.get_p2();
     m_coord.translate_inside(p1);
     m_coord.translate_inside(p2);
     lineColor(surf, p1(0), p1(1), p2(0), p2(1), 0xff0000ff);
@@ -103,12 +103,11 @@ simulation::calc(double delta_ms)
     for (it = m_points.begin(); it != m_points.end(); it++)
     {
         point * p = (*it);
-        ublas::vector<double> & vel = p->get_velocity();
-        ublas::vector<double> force(2);
-        ublas::vector<double> & pos = p->get_pos();
-        ublas::vector<double> tmp_pos(2);
-        ublas::vector<double> tmp(2);
-        ublas::vector<double> acc(2);
+        vector_t & vel = p->get_velocity();
+        vector_t force(2);
+        pos_t & pos = p->get_pos();
+        pos_t tmp_pos(2);
+        vector_t acc(2);
         LOG(2, "p: " << pos);
         LOG(2, "v: " << vel);
         for (int i = 0 ; i < 2; i++)
@@ -124,8 +123,8 @@ simulation::calc(double delta_ms)
         LOG(2, "tmp_pos: " << tmp_pos << " pos: " << pos << " prod: " << distance);
         if (inside == true && std::abs(distance) < 1.0) /* collision */
         {
-            ublas::vector<double> vn(2);
-            ublas::vector<double> vt(2);
+            vector_t vn(2);
+            vector_t vt(2);
             double len_vn;
             LOG(2, "got collision");
             LOG(2, "v: " << vel);
@@ -157,7 +156,7 @@ simulation::calc(double delta_ms)
 }
 
 void
-simulation::apply_gravity(point * p, ublas::vector<double> & f)
+simulation::apply_gravity(point * p, vector_t & f)
 {
     f += p->get_mass() * m_accel_gravity;
     LOG(2, "appply gravity, g: " << m_accel_gravity << " f: " << f << " m: " << p->get_mass());
@@ -171,19 +170,19 @@ simulation::setup()
         point * p = NULL;
 
         p = new point(0.1, 100, 0);
-        ublas::vector<double> & v1 = p->get_velocity();
+        vector_t & v1 = p->get_velocity();
         v1(0) = -10;
         m_points.push_back(p);
 
         p = new point(100, 0, 50);
-        ublas::vector<double> & v2 = p->get_velocity();
+        vector_t & v2 = p->get_velocity();
     /*        v(0) = 5;
         v(1) = 10;*/
         m_points.push_back(p);
-        ublas::vector<double> p1(2);
+        vertex_t p1(2);
         p1(0) = -100;
         p1(1) = -0;
-        ublas::vector<double> p2(2);
+        vertex_t p2(2);
         p2(0) = 200;
         p2(1) = -50;
 

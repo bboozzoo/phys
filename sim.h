@@ -23,7 +23,7 @@ class simulation
     private:
         void draw();
         void calc(double delta_ms);
-        void apply_gravity(point * p, ublas::vector<double> & f);
+        void apply_gravity(point * p, vector_t & f);
 
         gfx * m_gfx;
         input * m_input;
@@ -31,7 +31,7 @@ class simulation
         plane m_plane;
         double  m_time;
         coord m_coord;
-        ublas::vector<double> m_accel_gravity;
+        vector_t m_accel_gravity;
         bin_set m_bin_set;
 };
 

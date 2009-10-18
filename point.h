@@ -1,21 +1,19 @@
 #ifndef __POINT_H__
 #define __POINT_H__
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/io.hpp>
+#include "object.h"
 
-using namespace boost::numeric;
 namespace phys {
 
-class point 
+class point : public simobject<SIMOBJECT_POINT, 1>
 {
 	public:
 		point(double mass, double x, double y, double z = 0);
 		virtual ~point();
-		ublas::vector<double> & get_pos()
+		vertex_t & get_pos()
 		{
-		    return m_pos;
+		    return m_vertices[0];
 		}
-		ublas::vector<double> & get_velocity()
+		vector_t & get_velocity()
 		{
 		    return m_velocity;
 		}
@@ -27,11 +25,18 @@ class point
 		{
 		    return m_mass;
 		}
+        double distance(const pos_t & p)
+        {
+            return 0.0;
+        }
+        bool is_collision(const pos_t & p)
+        {
+            return false;
+        }
 	private:
 		double m_mass;
 		double m_1_over_mass;
-		ublas::vector<double> m_pos;
-		ublas::vector<double> m_velocity;
+		vector_t m_velocity;
 };
 
 }

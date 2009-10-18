@@ -1,39 +1,43 @@
 #ifndef __PLANE_H__
 #define __PLANE_H__
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/io.hpp>
-using namespace boost::numeric;
+#include "object.h"
 
 namespace phys
 {
 
-class plane
+class plane : public simobject<SIMOBJECT_PLANE, 2>
 {
 	public:
 		plane();
 		~plane();
-		void init(ublas::vector<double> p1, ublas::vector<double> p2);
-		ublas::vector<double> & get_normal();
-		ublas::vector<double> & get_nn();
+		void init(vertex_t p1, vertex_t p2);
+        vector_t & get_normal();
+		vector_t & get_nn();
 		double get_p();
-        ublas::vector<double> & get_p1();
-        ublas::vector<double> & get_p2();
-        bool is_inside(ublas::vector<double> & p);
+        vertex_t & get_p1();
+        vertex_t & get_p2();
+        bool is_inside(const pos_t & p);
+        double distance(const pos_t & p)
+        {
+            return 0.0;
+        }
+        bool is_collision(const pos_t & p)
+        {
+            return false;
+        }
 
 		
 	private:
-		ublas::vector<double> m_p1;
-		ublas::vector<double> m_p2;
-		ublas::vector<double> * m_start_x;
-		ublas::vector<double> * m_end_x;
-		ublas::vector<double> * m_start_y;
-		ublas::vector<double> * m_end_y;
+		vertex_t * m_start_x;
+		vertex_t * m_end_x;
+		vertex_t * m_start_y;
+		vertex_t * m_end_y;
         /* 
          * line eq in 2D: Ax + By + C = 0
          * normal N is [A, B] 
          * vector in line is [-B, A] 
          */
-		ublas::vector<double> m_normal;
+		vector_t m_normal;
         double m_c;
         /* 
          * represent plane/line in hessian normal form
@@ -41,7 +45,7 @@ class plane
          * n - normalized normal
          * p = C / |N|
          */
-        ublas::vector<double> m_n;
+        vector_t m_n;
         double m_p;
 };
 
