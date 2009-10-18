@@ -36,9 +36,9 @@ class point : public simobject<SIMOBJECT_POINT, 1>
         }
 	private:
         void validate_mass();
-		double m_mass;
-		double m_1_over_mass;
-		vector_t m_velocity;
+		double      m_mass;
+		double      m_1_over_mass;
+		vector_t    m_velocity;
 };
 
 }

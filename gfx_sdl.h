@@ -27,7 +27,16 @@ class gfx_SDL : public gfx
             return m_surface;
         }
 	private:
-		SDL_Surface * m_surface;
+#define FRAMERATE_BUF_LEN 10
+#define FRAMERATE_CNT_THRESH 50 
+        struct frame_rate
+        {
+            uint32_t    frame_cnt;
+            uint32_t    last_calc_time; 
+            char        rate_buf[FRAMERATE_BUF_LEN];
+        };
+		SDL_Surface *   m_surface;
+        frame_rate      m_framerate;
 };
 
 }

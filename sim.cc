@@ -137,6 +137,7 @@ simulation::draw()
     m_coord.translate_inside(p1, coord::TO_SCREEN);
     m_coord.translate_inside(p2, coord::TO_SCREEN);
     lineColor(surf, p1(0), p1(1), p2(0), p2(1), 0xff0000ff);
+
     /*
        filledCircleColor(surf, 100, 100, 10, 0xffffffff);
        filledCircleColor(surf, 0, 0, 10, 0xffffffff);

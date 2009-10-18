@@ -35,11 +35,12 @@ class coord
         void vline(gfx * g);
         void line(gfx * g, vertex_t & start, vertex_t & end, line_type_t t);
         void ticks(gfx * g);
-        double m_width;
-        double m_height;
-        double m_sc_width;
-        double m_sc_height;
-        vector_t m_offs;
+
+        double          m_width;
+        double          m_height;
+        double          m_sc_width;
+        double          m_sc_height;
+        vector_t        m_offs;
 
 };
 

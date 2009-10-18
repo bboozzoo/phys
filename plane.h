@@ -28,26 +28,27 @@ class plane : public simobject<SIMOBJECT_PLANE, 2>
 
 		
 	private:
-		vertex_t * m_start_x;
-		vertex_t * m_end_x;
-		vertex_t * m_start_y;
-		vertex_t * m_end_y;
+		vertex_t *      m_start_x;
+		vertex_t *      m_end_x;
+		vertex_t *      m_start_y;
+		vertex_t *      m_end_y;
         /* 
          * line eq in 2D: Ax + By + C = 0
          * normal N is [A, B] 
          * vector in line is [-B, A] 
          */
-		vector_t m_normal;
-        double m_c;
+		vector_t        m_normal;
+        double          m_c;
         /* 
          * represent plane/line in hessian normal form
          * n * x = -p
          * n - normalized normal
          * p = C / |N|
          */
-        vector_t m_n;
-        double m_p;
+        vector_t        m_n;
+        double          m_p;
 };
 
 }
 #endif /* __PLANE_H__ */
+

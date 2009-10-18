@@ -67,8 +67,8 @@ class event
 		void set_info(event_info_sh_t & e);
 		void clear();
 	private:
-        event_info_sh_t m_info;
-		event_type_t m_type;
+        event_info_sh_t     m_info;
+		event_type_t        m_type;
 };
 
 }
