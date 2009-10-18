@@ -52,6 +52,12 @@ simulation::run()
         if (t_delta >= 0.001) 
         {
             LOG(2, "--- update ---");
+            /* temporary fix for t_delta too large */
+            while (t_delta > 0.01)
+            {
+                calc(0.005);
+                t_delta -= 0.005;
+            }
             calc(t_delta);
             m_time = now;
         }
