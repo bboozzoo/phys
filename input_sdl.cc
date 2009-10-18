@@ -20,7 +20,7 @@ input_SDL::poll(event & ev)
     boost::shared_ptr<event_info> einfo;
     SDL_Event sdl_ev;
 
-    while (SDL_PollEvent(&sdl_ev)) 
+    if (SDL_PollEvent(&sdl_ev)) 
     {
         switch(sdl_ev.type) 
         {
@@ -32,7 +32,7 @@ input_SDL::poll(event & ev)
             case SDL_MOUSEMOTION:
                 etype = event::EVENT_MOUSE_MOTION;
                 einfo = create_mouse_info(sdl_ev.motion.x, sdl_ev.motion.y);
-                LOG(1, "event mouse motion: " << sdl_ev.motion.x << "," << sdl_ev.motion.y);
+                LOG(2, "event mouse motion: " << sdl_ev.motion.x << "," << sdl_ev.motion.y);
                 break;
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP:
@@ -41,7 +41,7 @@ input_SDL::poll(event & ev)
                 else
                     etype = event::EVENT_MOUSE_BUTTON_UP;
                 einfo = create_mouse_info(sdl_ev.button.x, sdl_ev.button.y);
-                LOG(1, "event mouse button: " << sdl_ev.button.x << "," << sdl_ev.button.y);
+                LOG(1, "event mouse button " << ((etype == event::EVENT_MOUSE_BUTTON_DOWN) ? "down" : "up") << " " << sdl_ev.button.x << "," << sdl_ev.button.y);
                 break;
             case SDL_QUIT:
                 etype = event::EVENT_QUIT;

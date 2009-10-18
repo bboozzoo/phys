@@ -1,5 +1,4 @@
 #include <SDL/SDL_gfxPrimitives.h>
-#include <boost/numeric/ublas/io.hpp>
 #include "coord.h"
 #include "gfx_sdl.h"
 #include "log.h"
@@ -28,24 +27,39 @@ coord::init(double width, double height, double sc_width, double sc_height)
     LOG(3, "offs: " << m_offs);
 }
 
-
-ublas::vector<double> 
-coord::translate(ublas::vector<double> & v)
+pos_t
+coord::translate(pos_t & v, translation_type_t type)
 {
-    ublas::vector<double> ret(v.size());
-    ret = v + m_offs;
-    ret(1) = -ret(1);
+    pos_t ret(v.size());
+    if (type == TO_SCREEN)
+    {
+        ret = v + m_offs;
+        ret(1) = -ret(1);
+    }
+    else 
+    {
+        ret = v - m_offs;
+        ret(1) -= 2*v(1);
+    }
     return ret;
 }
 
 void
-coord::translate_inside(ublas::vector<double> & v) 
+coord::translate_inside(pos_t & v, translation_type_t type) 
 {
     LOG(3, "transl, point: " << v << " offs: " << m_offs);
     if (v.size() != m_offs.size())
         v.resize(m_offs.size(), true);
-    v += m_offs;
-    v(1) = -v(1);
+    if (type == TO_SCREEN) 
+    {
+        v += m_offs;
+        v(1) = -v(1);
+    } 
+    else 
+    {
+        v(1) = -v(1);
+        v -= m_offs;
+    }
 }
 
 void
@@ -58,8 +72,8 @@ coord::draw(gfx * g)
 void
 coord::hline(gfx * g)
 {
-    ublas::vector<double> point1(2);
-    ublas::vector<double> point2(2);
+    pos_t point1(2);
+    pos_t point2(2);
     int32_t i = 0;
 
     point1(0) = -m_width / 2.0;
@@ -83,8 +97,8 @@ coord::hline(gfx * g)
 void
 coord::vline(gfx * g) 
 {
-    ublas::vector<double> point1(2);
-    ublas::vector<double> point2(2);
+    pos_t point1(2);
+    pos_t point2(2);
     int32_t i = 0;
 
     point1(0) = 0;
@@ -119,7 +133,7 @@ coord::ticks(gfx * g)
 }
 
 void 
-coord::line(gfx * g, ublas::vector<double> & start, ublas::vector<double> & end, line_type_t t)
+coord::line(gfx * g, vertex_t & start, vertex_t & end, line_type_t t)
 {
     try 
     {
@@ -141,7 +155,7 @@ coord::line(gfx * g, ublas::vector<double> & start, ublas::vector<double> & end,
 }
 
 bool
-coord::visible(ublas::vector<double> & v) 
+coord::visible(pos_t & v) 
 {
     /* 2D only */
     LOG(2, "check visible vector/point: " << v << "in screen: " << m_width << "x" << m_height);

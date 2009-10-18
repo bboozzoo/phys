@@ -11,7 +11,7 @@ namespace phys
 {
 
 simulation::simulation(gfx * g, input * i)
-    : m_gfx(g), m_input(i), m_accel_gravity(2)
+    : m_gfx(g), m_input(i), m_accel_gravity(2), m_run(false)
 {
     double width = 0;
     double height = 0;
@@ -33,18 +33,17 @@ simulation::~simulation()
 void 
 simulation::run()
 {
-
     double t_delta = 0;
-    m_time = ((double) SDL_GetTicks()) / 1000.0;
 
-    while(true)
+    m_run = true;
+    /* init time */
+    m_time = ((double) SDL_GetTicks()) / 1000.0;
+    
+    while(m_run)
     {
-        event ev;
         double now = 0;
 
-        m_input->poll(ev);
-        if (ev == event::EVENT_QUIT)
-            break;
+        handle_input();
 
         now = ((double)SDL_GetTicks()) / 1000.0;
         t_delta = now - m_time;
@@ -58,6 +57,56 @@ simulation::run()
         }
         draw();
         m_gfx->update();
+    }
+
+}
+
+void
+simulation::handle_input()
+{
+    event ev;
+
+    m_input->poll(ev);
+    switch(ev.get_type())
+    {
+        case event::EVENT_QUIT:
+            m_run = false;
+            break;
+        case event::EVENT_MOUSE_BUTTON_DOWN: 
+            LOG(1, "down");
+        case event::EVENT_MOUSE_BUTTON_UP:
+            {
+                LOG(1, "mouse button event " << ((ev == event::EVENT_MOUSE_BUTTON_DOWN) ? "down" : "up") <<  " p: " << m_input_state.last_click_pos << " valid: " << m_input_state.last_click_valid);
+                pos_t p(2);
+                try
+                {
+                    event_info_mouse & m = dynamic_cast<event_info_mouse &>(ev.get_info());
+                    p(0) = m(0);
+                    p(1) = m(1);
+                    m_coord.translate_inside(p, coord::FROM_SCREEN);
+                    LOG(1, "COORDS: " << p);
+                    if (ev == event::EVENT_MOUSE_BUTTON_DOWN)
+                    {
+                        m_input_state.last_click_valid = true;
+                        m_input_state.last_click_pos = p;
+                    }
+                    else if (m_input_state.last_click_valid == true)
+                    {
+                        vector_t initial_velocity = p - m_input_state.last_click_pos;
+                        add_point(m_input_state.last_click_pos, initial_velocity);
+                        m_input_state.last_click_valid = false;
+                    }
+                }
+                catch (std::bad_cast & b) 
+                {
+                    std::cerr << "event info, bad cast: " << b.what() << std::endl;
+                }
+
+                break;
+            }
+
+        default:
+            break;
     }
 
 }
@@ -80,13 +129,13 @@ simulation::draw()
     for (it = m_points.begin(); it != m_points.end(); it++)
     {
         pos_t v ((*it)->get_pos());
-        m_coord.translate_inside(v);
+        m_coord.translate_inside(v, coord::TO_SCREEN);
         filledCircleColor(surf, v(0), v(1), 1, 0xffffffff);
     }
     vertex_t p1 = m_plane.get_p1();
     vertex_t p2 = m_plane.get_p2();
-    m_coord.translate_inside(p1);
-    m_coord.translate_inside(p2);
+    m_coord.translate_inside(p1, coord::TO_SCREEN);
+    m_coord.translate_inside(p2, coord::TO_SCREEN);
     lineColor(surf, p1(0), p1(1), p2(0), p2(1), 0xff0000ff);
     /*
        filledCircleColor(surf, 100, 100, 10, 0xffffffff);
@@ -103,9 +152,17 @@ simulation::calc(double delta_ms)
     for (it = m_points.begin(); it != m_points.end(); it++)
     {
         point * p = (*it);
+        pos_t & pos = p->get_pos();
+        if (!m_coord.visible(pos))
+        {
+            it = m_points.erase(it);
+            it--;
+            delete p;
+            continue;
+        }
+
         vector_t & vel = p->get_velocity();
         vector_t force(2);
-        pos_t & pos = p->get_pos();
         pos_t tmp_pos(2);
         vector_t acc(2);
         LOG(2, "p: " << pos);
@@ -165,36 +222,50 @@ simulation::apply_gravity(point * p, vector_t & f)
 void 
 simulation::setup()
 {
+    pos_t pos(2);
+    vector_t vel(2);
+
+    pos(0) = 100.0;
+    pos(1) = 0.0;
+    vel(0) = -10.0;
+    vel(1) = 0;
+
+    add_point(pos, vel);
+
+    pos(0) = 0.0; 
+    pos(1) = 50.0;
+    /*
+    vel(0) = 5;
+    vel(1) = 10;
+    */
+    add_point(pos, vel);
+
+    vertex_t p1(2);
+    p1(0) = -100;
+    p1(1) = -0;
+    vertex_t p2(2);
+    p2(0) = 200;
+    p2(1) = -50;
+
+    LOG(1, "creating plane, p1: " << p1 << " p2: " << p2);
+    m_plane.init(p1, p2);
+
+}
+
+void 
+simulation::add_point(pos_t & initial_position, vector_t & initial_velocity)
+{
     try
     {
-        point * p = NULL;
-
-        p = new point(0.1, 100, 0);
-        vector_t & v1 = p->get_velocity();
-        v1(0) = -10;
+        LOG(1, "add point, initial p: " << initial_position << " initial v: " << initial_velocity);
+        point * p = new point(0.1, initial_position, initial_velocity);
         m_points.push_back(p);
-
-        p = new point(100, 0, 50);
-        vector_t & v2 = p->get_velocity();
-    /*        v(0) = 5;
-        v(1) = 10;*/
-        m_points.push_back(p);
-        vertex_t p1(2);
-        p1(0) = -100;
-        p1(1) = -0;
-        vertex_t p2(2);
-        p2(0) = 200;
-        p2(1) = -50;
-
-        LOG(1, "creating plane, p1: " << p1 << " p2: " << p2);
-        m_plane.init(p1, p2);
-    } 
-    catch (std::exception &e) 
+    }
+    catch (std::exception &e)
     {
         std::cerr << "exception" << e.what() << std::endl;
         throw;
-    }   
-
+    }
 }
 
 void 

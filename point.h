@@ -8,6 +8,7 @@ class point : public simobject<SIMOBJECT_POINT, 1>
 {
 	public:
 		point(double mass, double x, double y, double z = 0);
+		point(double mass, pos_t pos, vector_t vel);
 		virtual ~point();
 		vertex_t & get_pos()
 		{
@@ -34,6 +35,7 @@ class point : public simobject<SIMOBJECT_POINT, 1>
             return false;
         }
 	private:
+        void validate_mass();
 		double m_mass;
 		double m_1_over_mass;
 		vector_t m_velocity;

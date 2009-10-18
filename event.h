@@ -7,9 +7,13 @@ namespace phys
 
 class event_info
 {
-
-
+    public:
+        event_info()
+        {}
+        virtual ~event_info()
+        {}
 };
+
 typedef boost::shared_ptr<event_info> event_info_sh_t;
 
 class event_info_mouse : public event_info
@@ -35,7 +39,9 @@ class event_info_mouse : public event_info
 
 class event_info_key : public event_info
 {
-
+    public:
+        event_info_key();
+        ~event_info_key();
 };
 
 class event
@@ -56,6 +62,7 @@ class event
 		event(const event & e);
 		event_info & get_info();
 		bool operator==(event_type_t etype);
+        event_type_t get_type();
 		void set_type(event_type_t e);
 		void set_info(event_info_sh_t & e);
 		void clear();

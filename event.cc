@@ -34,6 +34,12 @@ event::operator==(event_type_t etype)
     return false;
 }
 
+event::event_type_t
+event::get_type() 
+{
+    return m_type;
+}
+
 void 
 event::set_type(event_type_t e)
 {

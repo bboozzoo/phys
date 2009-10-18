@@ -3,6 +3,7 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include "bin.h"
 #include "gfx.h"
+#include "object.h"
 
 using namespace boost::numeric;
 
@@ -10,14 +11,20 @@ namespace phys {
 
 class coord 
 {
+
 	public:
+        typedef enum {
+            TO_SCREEN,
+            FROM_SCREEN,
+        } translation_type_t;
+
 		coord();
         virtual ~coord();
-        ublas::vector<double> translate(ublas::vector<double> & v);
         void init(double width, double height, double sc_width, double sc_height);
-        void translate_inside(ublas::vector<double> & v);
+        pos_t translate(pos_t & p, translation_type_t type = TO_SCREEN);
+        void translate_inside(pos_t & p, translation_type_t type = TO_SCREEN);
         void draw(gfx * g);
-        bool visible(ublas::vector<double> & v);
+        bool visible(pos_t & p);
 	private:
         typedef enum {
             LINE_H = 0,
@@ -26,13 +33,13 @@ class coord
 
         void hline(gfx * g);
         void vline(gfx * g);
-        void line(gfx * g, ublas::vector<double> & start, ublas::vector<double> & end, line_type_t t);
+        void line(gfx * g, vertex_t & start, vertex_t & end, line_type_t t);
         void ticks(gfx * g);
         double m_width;
         double m_height;
         double m_sc_width;
         double m_sc_height;
-        ublas::vector<double> m_offs;
+        vector_t m_offs;
 
 };
 
