@@ -11,7 +11,7 @@ namespace phys
 {
 
 simulation::simulation(gfx * g, input * i)
-    : m_gfx(g), m_input(i), m_accel_gravity(2), m_run(false)
+    : m_gfx(g), m_input(i), m_accel_gravity(2) 
 {
     double width = 0;
     double height = 0;
@@ -35,11 +35,11 @@ simulation::run()
 {
     double t_delta = 0;
 
-    m_run = true;
+    m_state.m_run = true;
     /* init time */
     m_time = ((double) SDL_GetTicks()) / 1000.0;
     
-    while(m_run)
+    while(m_state.m_run)
     {
         double now = 0;
 
@@ -51,14 +51,17 @@ simulation::run()
 
         if (t_delta >= 0.001) 
         {
-            LOG(2, "--- update ---");
-            /* temporary fix for t_delta too large */
-            while (t_delta > 0.01)
+            if (!m_state.m_paused) 
             {
-                calc(0.005);
-                t_delta -= 0.005;
+                LOG(2, "--- update ---");
+                /* temporary fix for t_delta too large */
+                while (t_delta > 0.01)
+                {
+                    calc(0.005);
+                    t_delta -= 0.005;
+                }
+                calc(t_delta);
             }
-            calc(t_delta);
             m_time = now;
         }
         draw();
@@ -75,14 +78,14 @@ simulation::handle_input()
     m_input->poll(ev);
     switch(ev.get_type())
     {
-        case event::EVENT_QUIT:
-            m_run = false;
+        case event::QUIT:
+            m_state.m_run = false;
             break;
-        case event::EVENT_MOUSE_BUTTON_DOWN: 
+        case event::MOUSE_BUTTON_DOWN: 
             LOG(1, "down");
-        case event::EVENT_MOUSE_BUTTON_UP:
+        case event::MOUSE_BUTTON_UP:
             {
-                LOG(1, "mouse button event " << ((ev == event::EVENT_MOUSE_BUTTON_DOWN) ? "down" : "up") <<  " p: " << m_input_state.last_click_pos << " valid: " << m_input_state.last_click_valid);
+                LOG(1, "mouse button event " << ((ev == event::MOUSE_BUTTON_DOWN) ? "down" : "up") <<  " p: " << m_input_state.m_last_click_pos << " valid: " << m_input_state.m_last_click_valid);
                 pos_t p(2);
                 try
                 {
@@ -91,26 +94,49 @@ simulation::handle_input()
                     p(1) = m(1);
                     m_coord.translate_inside(p, coord::FROM_SCREEN);
                     LOG(1, "COORDS: " << p);
-                    if (ev == event::EVENT_MOUSE_BUTTON_DOWN)
+                    if (ev == event::MOUSE_BUTTON_DOWN)
                     {
-                        m_input_state.last_click_valid = true;
-                        m_input_state.last_click_pos = p;
+                        m_input_state.m_last_click_valid = true;
+                        m_input_state.m_last_click_pos = p;
                     }
-                    else if (m_input_state.last_click_valid == true)
+                    else if (m_input_state.m_last_click_valid == true)
                     {
-                        vector_t initial_velocity = p - m_input_state.last_click_pos;
-                        add_point(m_input_state.last_click_pos, initial_velocity);
-                        m_input_state.last_click_valid = false;
+                        vector_t initial_velocity = p - m_input_state.m_last_click_pos;
+                        add_point(m_input_state.m_last_click_pos, initial_velocity);
+                        m_input_state.m_last_click_valid = false;
                     }
                 }
                 catch (std::bad_cast & b) 
                 {
-                    std::cerr << "event info, bad cast: " << b.what() << std::endl;
+                    std::cerr << "event info mouse, bad cast: " << b.what() << std::endl;
                 }
 
                 break;
             }
-
+        case event::KEY:
+            {
+                LOG(1, "key event");
+                try
+                {
+                    event_info_key & k = dynamic_cast<event_info_key &>(ev.get_info());
+                    switch (k.get_key())
+                    {
+                        case event_info_key::SPACE:
+                            m_state.m_paused = !m_state.m_paused;
+                            break;
+                        case event_info_key::Q:
+                            m_state.m_run = false;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                catch (std::bad_cast & b)
+                {
+                    std::cerr << "event info key, bad cast: " << b.what() << std::endl;
+                }
+                break;
+            }
         default:
             break;
     }
@@ -130,25 +156,30 @@ simulation::draw()
         return;
 
     surf = g->get_ctx();
-    boxColor(surf, 0, 0, surf->w - 1, surf->h - 1, 0x000000ff);
+    boxColor(surf, 0, 0, surf->w - 1, surf->h - 1, color::BLACK);
     m_coord.draw(m_gfx);
     for (it = m_points.begin(); it != m_points.end(); it++)
     {
         pos_t v ((*it)->get_pos());
         m_coord.translate_inside(v, coord::TO_SCREEN);
-        filledCircleColor(surf, v(0), v(1), 1, 0xffffffff);
+        filledCircleColor(surf, v(0), v(1), 1, color::WHITE);
     }
     vertex_t p1 = m_plane.get_p1();
     vertex_t p2 = m_plane.get_p2();
     m_coord.translate_inside(p1, coord::TO_SCREEN);
     m_coord.translate_inside(p2, coord::TO_SCREEN);
-    lineColor(surf, p1(0), p1(1), p2(0), p2(1), 0xff0000ff);
+    lineColor(surf, p1(0), p1(1), p2(0), p2(1), color::RED);
 
     /*
        filledCircleColor(surf, 100, 100, 10, 0xffffffff);
        filledCircleColor(surf, 0, 0, 10, 0xffffffff);
        filledCircleColor(surf, 640, 480, 10, 0xffffffff);
        */
+
+    if (m_state.m_paused)
+    {
+        stringColor(surf, 0, 10, "** PAUSED **", color::WHITE);
+    }
 }
 
 void 

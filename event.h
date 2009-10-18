@@ -40,8 +40,26 @@ class event_info_mouse : public event_info
 class event_info_key : public event_info
 {
     public:
-        event_info_key();
-        ~event_info_key();
+        typedef enum
+        {
+            NONE,
+            SPACE,
+            LEFT,
+            RIGHT,
+            Q,
+        } event_key_t;
+
+        event_info_key(event_key_t key)
+            : m_key(key)
+        {}
+        ~event_info_key()
+        {}
+        event_key_t get_key()
+        {
+            return m_key;
+        }
+    private:
+        event_key_t     m_key;
 };
 
 class event
@@ -49,12 +67,12 @@ class event
 	public:
 		typedef enum 
 		{ 
-			EVENT_NONE = 0, /* empty event === no input */
-			EVENT_QUIT,
-			EVENT_MOUSE_MOTION,
-            EVENT_MOUSE_BUTTON_DOWN,
-            EVENT_MOUSE_BUTTON_UP,
-			EVENT_KEY,
+			NONE = 0, /* empty event === no input */
+			QUIT,
+			MOUSE_MOTION,
+            MOUSE_BUTTON_DOWN,
+            MOUSE_BUTTON_UP,
+			KEY,
 		} event_type_t;
 
 		event();

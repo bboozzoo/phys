@@ -12,7 +12,6 @@ namespace phys
 void gfx_SDL::init() 
 {
 	const SDL_VideoInfo * video_info = NULL;
-	SDL_Surface * surface = NULL;
 	uint32_t video_flags = 0x0;
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -35,12 +34,12 @@ void gfx_SDL::update()
     {
         uint32_t now = SDL_GetTicks();
         uint32_t diff = SDL_GetTicks() - m_framerate.last_calc_time;
-        snprintf(m_framerate.rate_buf, FRAMERATE_BUF_LEN, "%.2f", (((double)FRAMERATE_CNT_THRESH) / (double) diff)* 1000.0);
+        snprintf(m_framerate.rate_buf, FRAMERATE_BUF_LEN, "FPS: %.2f", (((double)FRAMERATE_CNT_THRESH) / (double) diff)* 1000.0);
         m_framerate.last_calc_time = now;
         m_framerate.frame_cnt = 0;
 
     }
-    stringColor(m_surface, 0, 0, m_framerate.rate_buf, 0xffffffff);
+    stringColor(m_surface, 0, 0, m_framerate.rate_buf, color::WHITE);
     SDL_Flip(m_surface);
 }
 

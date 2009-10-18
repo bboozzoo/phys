@@ -3,6 +3,21 @@
 
 namespace phys 
 {
+
+namespace color
+{
+    typedef enum
+    {
+        WHITE   = 0xffffffff,
+        BLACK   = 0x000000ff,
+        RED     = 0xff0000ff,
+        GREEN   = 0x00ff00ff,
+        BLUE    = 0x0000ffff,
+        YELLOW  = 0xffff00ff,
+        ORANGE  = 0xffa500ff,
+    } color_val_t;
+}
+
 class gfx 
 {
 	public:

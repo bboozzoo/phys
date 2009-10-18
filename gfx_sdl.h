@@ -27,7 +27,7 @@ class gfx_SDL : public gfx
             return m_surface;
         }
 	private:
-#define FRAMERATE_BUF_LEN 10
+#define FRAMERATE_BUF_LEN 20
 #define FRAMERATE_CNT_THRESH 50 
         struct frame_rate
         {

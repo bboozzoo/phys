@@ -23,8 +23,20 @@ class simulation
     private:
         struct user_input_state
         {
-            pos_t last_click_pos;
-            bool last_click_valid;
+            pos_t m_last_click_pos;
+            bool m_last_click_valid;
+        };
+
+        struct simulation_state
+        {
+            simulation_state()
+                : m_run(false), m_paused(false)
+            {}
+            ~simulation_state()
+            {}
+
+            bool m_run;
+            bool m_paused;
         };
 
         void handle_input();
@@ -41,7 +53,7 @@ class simulation
         coord               m_coord; /* coordinate translation */
         vector_t            m_accel_gravity; /* default gravity */
         bin_set             m_bin_set;
-        bool                m_run; /* running flag */
+        simulation_state    m_state; /* running flag */
         user_input_state    m_input_state;
 
 };

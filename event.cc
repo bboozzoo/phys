@@ -6,7 +6,7 @@ namespace phys
 
 
 event::event()
-    : m_type(EVENT_NONE)
+    : m_type(NONE)
 {
 }
 
@@ -56,7 +56,7 @@ void
 event::clear()
 {
     m_info.reset();
-    m_type = EVENT_NONE;
+    m_type = NONE;
 }
 
 
