@@ -1,6 +1,7 @@
 #ifndef __EVENT_H__
 #define __EVENT_H__
 #include <boost/shared_ptr.hpp>
+#include <cstdint>
 
 namespace phys
 {
