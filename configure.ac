@@ -33,5 +33,20 @@ AC_SUBST([LIBSDL_CFLAGS], ["$libsdl_CFLAGS"])
 AC_SUBST([LIBSDL_LIBS], ["$libsdl_LIBS"])
 AC_SUBST([LIBSDLGFX_LIBS])
 
+AC_CHECK_PROGS([ODE_CONFIG], [ode-config], [])
+if test -z "$ODE_CONFIG"; then
+    AC_MSG_ERROR([ode-config not found])
+else
+    AC_MSG_CHECKING([checking ODE CFLAGS])
+    ODE_CFLAGS=`$ODE_CONFIG --cflags`
+    AC_MSG_RESULT([$ODE_CFLAGS])
+    AC_MSG_CHECKING([checking ODE libs])
+    ODE_LIBS=`$ODE_CONFIG --libs`
+    AC_MSG_RESULT([$ODE_LIBS])
+fi
+
+AC_SUBST([ODE_CFLAGS])
+AC_SUBST([ODE_LIBS])
+
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
