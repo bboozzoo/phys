@@ -2,7 +2,7 @@
 #include "input_sdl.h"
 #include "log.h"
 
-namespace phys 
+namespace sys
 {
 
 input_SDL::input_SDL() 

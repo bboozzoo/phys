@@ -3,7 +3,7 @@
 #include <SDL/SDL.h>
 #include "gfx.h"
 
-namespace phys 
+namespace sys
 {
 
 class gfx_SDL : public gfx

@@ -6,7 +6,7 @@
 #define VIDEO_H 600
 #define VIDEO_BPP 32
 
-namespace phys 
+namespace sys
 {
 
 void gfx_SDL::init() 

@@ -4,12 +4,11 @@
 #include "bin.h"
 #include "gfx.h"
 #include "object.h"
+#include "drawable.h"
 
 using namespace boost::numeric;
 
-namespace phys {
-
-class coord 
+class coord : public drawable
 {
 
 	public:
@@ -23,7 +22,7 @@ class coord
         void init(double width, double height, double sc_width, double sc_height);
         pos_t translate(pos_t & p, translation_type_t type = TO_SCREEN);
         void translate_inside(pos_t & p, translation_type_t type = TO_SCREEN);
-        void draw(gfx * g);
+        void draw(sys::gfx * g);
         bool visible(pos_t & p);
 	private:
         typedef enum {
@@ -43,6 +42,4 @@ class coord
         vector_t        m_offs;
 
 };
-
-}
 #endif /* __COORD_H__ */

@@ -63,7 +63,7 @@ coord::translate_inside(pos_t & v, translation_type_t type)
 }
 
 void
-coord::draw(gfx * g) 
+coord::draw(sys::gfx * g) 
 {
     hline(g);
     vline(g);

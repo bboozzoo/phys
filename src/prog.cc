@@ -1,7 +1,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_gfxPrimitives.h>
 #include "system.h"
-#include "sim.h"
+#include "prog.h"
 #include "plane.h"
 #include "gfx_sdl.h"
 #include "event.h"
@@ -10,45 +10,51 @@
 namespace phys
 {
 
-simulation::simulation(gfx * g, input * i)
-    : m_gfx(g), m_input(i), m_accel_gravity(2) 
+prog::prog(sys::system * sys)
+    : m_sys(sys)
 {
     double width = 0;
     double height = 0;
-    width = m_gfx->get_width();
-    height = m_gfx->get_height();
+    width = m_sys->get_gfx()->get_width();
+    height = m_sys->get_gfx()->get_height();
+    LOG(1, "screen size: " << width << "x" << height);
+    LOG(1, "initialize coordinate system");
     m_coord.init(width, height, width, height);
-    m_bin_set.init(width / 10.0, height / 10.0, width, height);
-
-    m_accel_gravity(0) = 0.0;
-    m_accel_gravity(1) = -9.81;
-    LOG(1, "initialize, g: " << m_accel_gravity);
+    LOG(1, "initialize world");
+    m_world = new world(m_coord);
+    LOG(1, "done");
 }
 
-simulation::~simulation() 
+prog::~prog() 
 {
 
 }
 
 void 
-simulation::run()
+prog::run()
 {
     double t_delta = 0;
 
     m_state.m_run = true;
     /* init time */
-    m_time = ((double) SDL_GetTicks()) / 1000.0;
+    m_time = ((double) m_sys->get_input()->get_ticks()) / 1000.0;
     
     while(m_state.m_run)
     {
+        loop();
         double now = 0;
 
         handle_input();
 
-        now = ((double)SDL_GetTicks()) / 1000.0;
+        now = ((double) m_sys->get_input()->get_ticks()) / 1000.0;
         t_delta = now - m_time;
         LOG(2, "delta: : " << t_delta << "ms, now: " << now << "ms, prev: " << m_time << "ms");
 
+        world->advance(t_delta);
+        m_coord.draw(m_sys->get_gfx());
+        world->draw(m_sys->get_gfx());
+
+#if 0
         if (t_delta >= 0.001) 
         {
             if (!m_state.m_paused) 
@@ -65,13 +71,13 @@ simulation::run()
             m_time = now;
         }
         draw();
+#endif
         m_gfx->update();
     }
-
 }
 
 void
-simulation::handle_input()
+prog::handle_input()
 {
     event ev;
 
@@ -144,7 +150,7 @@ simulation::handle_input()
 }
 
 void 
-simulation::draw() 
+prog::draw() 
 {
     gfx_SDL * g = dynamic_cast<gfx_SDL*>(m_gfx);
     if (g == NULL)
@@ -183,7 +189,7 @@ simulation::draw()
 }
 
 void 
-simulation::calc(double delta_ms) 
+prog::calc(double delta_ms) 
 {
     std::list<point*>::iterator it;
     LOG(2, "delta: " << delta_ms);
@@ -251,14 +257,14 @@ simulation::calc(double delta_ms)
 }
 
 void
-simulation::apply_gravity(point * p, vector_t & f)
+prog::apply_gravity(point * p, vector_t & f)
 {
     f += p->get_mass() * m_accel_gravity;
     LOG(2, "appply gravity, g: " << m_accel_gravity << " f: " << f << " m: " << p->get_mass());
 }
 
 void 
-simulation::setup()
+prog::setup()
 {
     pos_t pos(2);
     vector_t vel(2);
@@ -291,7 +297,7 @@ simulation::setup()
 }
 
 void 
-simulation::add_point(pos_t & initial_position, vector_t & initial_velocity)
+prog::add_point(pos_t & initial_position, vector_t & initial_velocity)
 {
     try
     {
@@ -307,7 +313,7 @@ simulation::add_point(pos_t & initial_position, vector_t & initial_velocity)
 }
 
 void 
-simulation::finish() 
+prog::finish() 
 {
     while (!m_points.empty())
     {

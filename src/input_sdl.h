@@ -3,7 +3,7 @@
 #include "input.h"
 #include "event.h"
 
-namespace phys
+namespace sys
 {
 
 class input_SDL : public input 

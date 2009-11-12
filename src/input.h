@@ -3,7 +3,7 @@
 #include <cstdint>
 #include "event.h"
 
-namespace phys
+namespace sys
 {
 
 class input 

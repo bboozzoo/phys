@@ -4,36 +4,33 @@
 #include "gfx.h"
 #include "input.h"
 
-namespace phys 
+namespace sys
 {
+
+typedef enum 
+{
+    INIT_GFX    = 0x01,
+    INIT_AUDIO  = 0x02,
+    INIT_INPUT  = 0x04,
+} sys_init_flags_t;
 
 class system 
 {
 	public:
-		enum 
-		{
-			INIT_GFX    = 0x01,
-			INIT_AUDIO  = 0x02,
-            INIT_INPUT  = 0x04,
-		};
-
-		static void init(uint32_t sys_init_flags);
+        
+		static system * init(uint32_t sys_init_flags);
 		static void finish();
-        static gfx * get_gfx();
-        static input * get_input();
+        gfx * get_gfx();
+        input * get_input();
         
 
 	private:
-		system();
+		system(uint32_t sys_init_flags);
 		~system();
 	
-		struct sys_info 
-		{
-			gfx * m_gfx;	
-            input * m_input;
-		};
-		
-		static sys_info * m_sys_info;
+        gfx * m_gfx;	
+        input * m_input;
+		static system * m_sys_single;
 	
 };
 

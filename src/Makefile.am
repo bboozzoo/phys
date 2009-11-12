@@ -4,12 +4,14 @@ phys_SOURCES = main.cc \
 			   system.cc \
 			   gfx_sdl.cc \
 			   input_sdl.cc \
-			   sim.cc \
+			   prog.cc \
 			   point.cc \
 			   coord.cc \
 			   log.cc \
 			   plane.cc \
-			   event.cc
+			   event.cc \
+			   world.cc \
+			   object_phys.cc
 
 phys_CXXFLAGS = $(LIBSDL_CFLAGS) \
 				$(BOOST_CPPFLAGS) \

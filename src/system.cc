@@ -9,27 +9,24 @@
 namespace phys 
 {
 
-system::sys_info * system::m_sys_info = NULL;
+sys::system * system::m_sys_single = NULL;
 
-void system::init(uint32_t sys_init_flags) 
+system::system(uint32_t sys_init_flags) 
 {
     try
     {
         LOG(1, "init sys info");
-        if (m_sys_info == NULL)
-            m_sys_info = new sys_info;
-
         if (sys_init_flags & INIT_GFX) 
         {
             LOG(1, "init GFX");
-            m_sys_info->m_gfx = new gfx_SDL();
-            m_sys_info->m_gfx->init();
+            m_gfx = new gfx_SDL();
+            m_gfx->init();
         }
 
         if (sys_init_flags & INIT_INPUT) 
         {
             LOG(1, "init input");
-            m_sys_info->m_input = new input_SDL();
+            m_input = new input_SDL();
         }
     }
     catch (std::exception &e)
@@ -39,35 +36,56 @@ void system::init(uint32_t sys_init_flags)
     }
 }
 
+system * system::init(uint32_t sys_init_flags) 
+{
+    system * s = NULL;
+    try
+    {
+        if (m_sys_single == NULL)
+        {
+            s = new system(sys_init_flags);
+            m_sys_single = s;
+        } 
+        else
+            s = m_sys_single;
+    }
+    catch (std::exception &e)
+    {
+        std::cerr << "exception" << e.what() << std::endl;
+        throw;
+    }
+    return s;
+}
+
 void system::finish() 
 {
-    LOG(1, "sys info? " << (void *) m_sys_info);
-	if (m_sys_info != NULL)
+    LOG(1, "sys info? " << (void *) m_sys_single);
+	if (m_sys_single != NULL)
     {
-		if (m_sys_info->m_gfx != NULL) 
+		if (m_sys_single->m_gfx != NULL) 
         {
             LOG(1, "cleanup GFX");
-			delete m_sys_info->m_gfx;
+			delete m_sys_single->m_gfx;
         }
-        if (m_sys_info->m_input != NULL)
+        if (m_sys_single->m_input != NULL)
         {
             LOG(1, "cleanup input");
-            delete m_sys_info->m_input;
+            delete m_sys_single->m_input;
         }
-        delete m_sys_info;
+        SDL_Quit();
+        delete m_sys_single;
+        m_sys_single = NULL;
     }
-    /* TODO: call SDL_Quit somewhere */
-    SDL_Quit();
 }
 
 gfx * system::get_gfx()
 {
-    return m_sys_info->m_gfx;
+    return m_sys_single->m_gfx;
 }
 
 input * system::get_input()
 {
-    return m_sys_info->m_input;
+    return m_sys_single->m_input;
 }
 
 }

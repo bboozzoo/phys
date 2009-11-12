@@ -1,7 +1,7 @@
 #ifndef __GFX_H__
 #define __GFX_H__
 
-namespace phys 
+namespace sys
 {
 
 namespace color

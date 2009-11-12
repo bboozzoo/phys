@@ -2,23 +2,18 @@
 #define __SIM_H__
 #include <list>
 #include "system.h"
-#include "gfx.h"
-#include "input.h"
 #include "coord.h"
+#if 0
 #include "point.h"
 #include "plane.h"
 #include "bin.h"
+#endif
 
-namespace phys
-{
-
-class simulation
+class prog
 {
     public: 
-        simulation(gfx * g, input * i);
-        ~simulation();
-        void setup();
-        void finish();
+        prog(sys::system * sys);
+        ~prog();
         void run();
     private:
         struct user_input_state
@@ -27,36 +22,30 @@ class simulation
             bool m_last_click_valid;
         };
 
-        struct simulation_state
+        struct prog_state
         {
-            simulation_state()
+            prog_state()
                 : m_run(false), m_paused(false)
             {}
-            ~simulation_state()
+            ~prog_state()
             {}
 
             bool m_run;
             bool m_paused;
         };
 
+        void loop();
         void handle_input();
-        void draw();
-        void calc(double delta_ms);
-        void apply_gravity(point * p, vector_t & f);
         void add_point(pos_t & initial_position, vector_t & initial_velocity);
 
-        gfx *               m_gfx;  /* graphics */
-        input *             m_input; /* input */
+        sys::system         m_sys; /* system, gfx, input etc. */
         std::list<point *>  m_points;
-        plane               m_plane; 
+        world *             m_world;
         double              m_time; /* time bookkeeping */
         coord               m_coord; /* coordinate translation */
-        vector_t            m_accel_gravity; /* default gravity */
-        bin_set             m_bin_set;
-        simulation_state    m_state; /* running flag */
+        prog_state          m_state; /* running flag */
         user_input_state    m_input_state;
 
 };
 
-}
 #endif /* __SIM_H__ */

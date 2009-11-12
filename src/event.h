@@ -3,9 +3,6 @@
 #include <boost/shared_ptr.hpp>
 #include <cstdint>
 
-namespace phys
-{
-
 class event_info
 {
     public:
@@ -90,6 +87,5 @@ class event
 		event_type_t        m_type;
 };
 
-}
 #endif /* __EVENT_H__ */
 
