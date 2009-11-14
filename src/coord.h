@@ -24,6 +24,7 @@ class coord : public drawable
         void translate_inside(pos_t & p, translation_type_t type = TO_SCREEN);
         void draw(sys::gfx * g, coord * c);
         bool visible(pos_t & p);
+        void get_dimensions(dimensions_t & world_dim, dimensions_t & screen_dim);
 	private:
         typedef enum {
             LINE_H = 0,

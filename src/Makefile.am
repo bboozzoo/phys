@@ -11,7 +11,8 @@ phys_SOURCES = main.cc \
 			   world_gfx.cc \
 			   world_phys.cc \
 			   object_phys.cc \
-			   point.cc
+			   point.cc \
+			   plane.cc
 
 phys_CXXFLAGS = $(LIBSDL_CFLAGS) \
 				$(BOOST_CPPFLAGS) \

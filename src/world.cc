@@ -1,6 +1,7 @@
 #include "world.h"
 #include "log.h"
 #include "point.h"
+#include "plane.h"
 
 world::world(coord & coord_sys)
     : world_phys(), world_gfx(), m_coord(&coord_sys)
@@ -22,7 +23,7 @@ world::advance(double delta_t)
 void 
 world::draw(sys::gfx * gfx)
 {
-    LOG(2, "draw");
+    LOG(3, "draw");
     world_gfx::draw(gfx, m_coord);
 }
 
@@ -31,8 +32,37 @@ world::setup()
 {
     LOG(1, "world setup");
     /* static configuration */
-    point * p = new point(this, 1, 0, 0, 0);
-    world_gfx::add(p);
-    world_phys::add(p);
+    for (int i = 0; i < 10; i++) {
+        point * p = new point(this, 1, 0 + (double) (i % 400)/2.0, -200 + (i % 400), 0);
+        world_gfx::add(p);
+        world_phys::add(p);
+    }
+
+    vertex_t n(3);
+    plane * pl;
+#if 1
+    n[0] = 0;
+    n[1] = 1;
+    n[2] = 0;
+    pl = new plane(this, n, 299);
+    world_gfx::add(pl);
+    world_phys::add(pl);
+#endif
+#if 1
+    n[0] = 1;
+    n[1] = 0;
+    n[2] = 0;
+    pl = new plane(this, n, 399);
+    world_gfx::add(pl);
+    world_phys::add(pl);
+#endif
+#if 1
+    n[0] = -1;
+    n[1] = 0;
+    n[2] = 0;
+    pl = new plane(this, n, 399);
+    world_gfx::add(pl);
+    world_phys::add(pl);
+#endif
 }
 

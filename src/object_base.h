@@ -13,6 +13,7 @@ class object_base
         virtual ~object_base()
         {
         }
+        object::type_t get_type() { return m_type; }
     protected:
         object::type_t       m_type;
 };

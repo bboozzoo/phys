@@ -14,6 +14,7 @@ namespace object
     {
        BOX,
        SPHERE,
+       PLANE, /* plane is immovable */
     } type_t;
 }
 

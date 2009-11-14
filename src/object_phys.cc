@@ -6,16 +6,22 @@ object_phys::object_phys(world_phys * world, object::type_t type)
     : object_base(type), m_world(world), m_body(NULL), m_geom(NULL)
 {
     LOG(1, "creating object at: "  << (void *) this << " phys, world: " << (void *) world << " type: " << type);
-    m_body = dBodyCreate(world->get_phys_world());
-    if (m_body != NULL) {
-        dBodySetData(m_body, (void *) this);
+    if (type != object::PLANE) {
+        m_body = dBodyCreate(world->get_phys_world());
+        if (m_body != NULL) {
+            dBodySetData(m_body, (void *) this);
+        }
     }
+    /* planes only have geometry */
 }
 
 object_phys::~object_phys()
 {
     LOG(1, "destroying object at " << (void *) this);
-    dBodyDestroy(m_body);
+    if (m_type != object::PLANE && m_body != NULL)
+        dBodyDestroy(m_body);
+    if (m_geom != NULL)
+        dGeomDestroy(m_geom);
     /* body destroy ??? */
 }
 
@@ -32,9 +38,15 @@ object_phys::set_geometry(dimensions_t & dim)
         case object::BOX:
             m_geom = dCreateBox(m_world->get_phys_space(), dim[0], dim[1], dim[2]);
             break;
+        case object::PLANE:
+            m_geom = dCreatePlane(m_world->get_phys_space(), dim[0], dim[1], dim[2], dim[3]);
         default:
             break;
     };
+    /* couple geom and body */
+    if (m_type != object::PLANE)
+        dGeomSetBody(m_geom, m_body); 
+    dGeomSetData(m_geom, this);
 }
 
 void
@@ -60,7 +72,7 @@ void
 object_phys::set_position(pos_t & pos) 
 {
     LOG(1, "object at: " << (void *) this << " setting position: " << pos);
-    if (m_body != NULL)
+    if (m_type != object::PLANE && m_body != NULL)
     {
         if (pos.size() == 2)
         {

@@ -166,3 +166,16 @@ coord::visible(pos_t & v)
     return false;
 }
 
+void
+coord::get_dimensions(dimensions_t & world_dim, dimensions_t & screen_dim)
+{
+    if (world_dim.size() < 2)
+        world_dim.resize(2);
+    if (screen_dim.size() < 2)
+        screen_dim.resize(2);
+    world_dim[0] = m_width;
+    world_dim[1] = m_height;
+    screen_dim[0] = m_sc_width;
+    screen_dim[1] = m_sc_height;
+}
+

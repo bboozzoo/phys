@@ -12,6 +12,7 @@ class world : public world_phys, public world_gfx
         void advance(double delta_t);
         void draw(sys::gfx * gfx);
         void setup();
+        coord * get_coord() { return m_coord; }
     private:
         coord *     m_coord;
 

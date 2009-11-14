@@ -1,7 +1,7 @@
 #ifndef __CONF_H__
 #define __CONF_H__
 
-#define DENSITY         (1.0)
+#define DENSITY         (0.01)
 #define GRAVITY         (-9.81)
 #define CFM             (1e-5)
 #define LINEAR_DAMPING  (0.00001)

@@ -51,36 +51,26 @@ prog::loop()
 
     handle_input();
 
+    /* calculate positions */
     now = ((double) m_sys->get_input()->get_ticks()) / 1000.0;
     t_delta = now - m_time;
-    LOG(2, "delta: : " << t_delta << "ms, now: " << now << "s, prev: " << m_time << "s");
+    LOG(2, "delta: : " << t_delta << "m, now: " << now << "s, prev: " << m_time << "s");
 
-    if (t_delta > STEP_SIZE) {
-        m_world->advance(t_delta);
-        m_time = now;
-    }
-    m_sys->get_gfx()->clear();
-    m_coord.draw(m_sys->get_gfx(), &m_coord);
-    m_world->draw(m_sys->get_gfx());
-
-#if 0
-    if (t_delta >= 0.001) 
-    {
+    if (t_delta >= STEP_SIZE) {
         if (!m_state.m_paused) 
         {
+            int iterations = static_cast<int>(t_delta / STEP_SIZE);
             LOG(2, "--- update ---");
-            /* temporary fix for t_delta too large */
-            while (t_delta > 0.01)
-            {
-                calc(0.005);
-                t_delta -= 0.005;
-            }
-            calc(t_delta);
+            LOG(2, "iterations: " << iterations);
+            for (int i = 0; i < iterations; i++)
+                m_world->advance(STEP_SIZE);
         }
         m_time = now;
     }
-    draw();
-#endif
+    /* display */
+    m_sys->get_gfx()->clear();
+    m_coord.draw(m_sys->get_gfx(), &m_coord);
+    m_world->draw(m_sys->get_gfx());
     m_sys->get_gfx()->update();
 }
 

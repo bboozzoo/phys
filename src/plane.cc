@@ -1,67 +1,55 @@
-#include <boost/numeric/ublas/vector.hpp>
+#include <SDL/SDL_gfxPrimitives.h>
+#include "world.h"
 #include "plane.h"
 #include "log.h"
+#include "gfx_sdl.h"
 
 using namespace boost::numeric;
 
-namespace phys
+plane::plane(world * w, vector_t normal, double d)
+	: object_phys(w, object::PLANE), m_normal(3), m_d(0.0) 
 {
+    m_normal = normal;
+    m_d = d;
+    dimensions_t dim(4);
+    dim[0] = m_normal[0];
+    dim[1] = m_normal[1];
+    dim[2] = m_normal[2];
+    /* ODE's plane equation is a*x + b*y + c*z = d */
+    dim[3] = -m_d;
+    set_geometry(dim);
 
-plane::plane()
-	: m_normal(2), m_c(0.0), m_n(2), m_p(0.0)
-{
-    m_vertices[0].resize(2);
-    m_vertices[1].resize(2);
-	for (size_t i = 0 ; i < m_normal.size(); i++)
-	{
-		m_vertices[0](i) = 0;
-		m_vertices[1](i) = 0;
-		m_normal(i) = 0;
-	}
-}
+    /* calculate the points through which plane shall pass when drawing */
+    for (int i = 0; i < 2; i++)
+        m_p[i].resize(2);
 
-void
-plane::init(vertex_t p1, vertex_t p2)
-{
-	m_vertices[0] = p1;
-	m_vertices[1] = p2;
+    coord * c = w->get_coord();
+    dimensions_t world_dim(2);
+    dimensions_t screen_dim(2);
+    c->get_dimensions(world_dim, screen_dim);
 
-    /* find normal to plane */
-    vector_t pv(2);
-    pv = p2 - p1;
-    m_normal(0) = -pv(1);
-    m_normal(1) = pv(0);
-    m_c = -ublas::inner_prod(m_normal, p1);
-	LOG(1, "plane, p1: " << p1 << " p2: " << p2 << " normal: " << m_normal << " C: " << m_c);
+    double world_w_2 = world_dim[0] / 2.0;
+    double world_h_2 = world_dim[1] / 2.0;
 
-    /* find normalized normal */
-    double norm_sqrt = ublas::norm_2(m_normal);
-    m_n = m_normal / norm_sqrt;
-    m_p = m_c / norm_sqrt;
-    LOG(1, "plane: normalized normal: " << m_n << " p: " << m_p);
+    if (m_normal[0] == 0.0) {
+        m_p[0][0] = -world_w_2;
+        m_p[1][0] = world_w_2;
+        m_p[0][1] = m_p[1][1] = -d/m_normal[1];
+    } else if (m_normal[1] == 0.0) {
+        m_p[0][1] = -world_h_2;
+        m_p[1][1] = world_h_2;
+        m_p[0][0] = m_p[1][0] = -d/m_normal[0];
+    } else {
+        m_p[0][0] = -world_w_2;
+        m_p[0][1] = (m_normal[0] * (m_p[0][0]) + d) / (-m_normal[1]);
+        m_p[1][0] = world_w_2;
+        m_p[1][1] = (m_normal[0] * (m_p[1][0]) + d) / (-m_normal[1]);
 
-    if (p1(0) <= p2(0))
-    {
-        m_start_x = &m_vertices[0];
-        m_end_x = &m_vertices[1];
-    } 
-    else
-    {
-        m_start_x = &m_vertices[1];
-        m_end_x = &m_vertices[0];
     }
-
-    if (p1(1) <= p2(1))
-    {
-        m_start_y = &m_vertices[0];
-        m_end_y = &m_vertices[1];
-    } 
-    else
-    {
-        m_start_y = &m_vertices[1];
-        m_end_y = &m_vertices[0];
-    }
-
+    LOG(1, "edge points: " << m_p[0] << " " << m_p[1]);
+    c->translate_inside(m_p[0], coord::TO_SCREEN);
+    c->translate_inside(m_p[1], coord::TO_SCREEN);
+    LOG(1, "translated edge points: " << m_p[0] << " " << m_p[1]);
 }
 
 plane::~plane()
@@ -75,38 +63,12 @@ plane::get_normal()
 	return m_normal;
 }
 
-vector_t & 
-plane::get_nn()
+void 
+plane::draw(sys::gfx * gfx, coord * c) 
 {
-	return m_n;
+    sys::gfx_SDL * g = dynamic_cast<sys::gfx_SDL*>(gfx);
+    SDL_Surface * surf = g->get_ctx();
+    lineColor(surf, m_p[0][0], m_p[0][1], m_p[1][0], m_p[1][1], sys::color::RED);
 }
 
-double
-plane::get_p()
-{
-	return m_p;
-}
-
-vertex_t & 
-plane::get_p1()
-{
-	return m_vertices[0];
-}
-
-vertex_t & 
-plane::get_p2()
-{
-	return m_vertices[1];
-}
-
-bool
-plane::is_inside(const pos_t & p) 
-{
-    if ((p(0) >= (*m_start_x)(0) && p(0) <= (*m_end_x)(0)) || 
-        (p(1) >= (*m_start_y)(1) && p(1) <= (*m_end_y)(1)))
-            return true;
-    return false;           
-}
-
-}
 

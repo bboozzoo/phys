@@ -13,11 +13,13 @@ class world_phys
         dWorldID get_phys_world() { return m_world; }
         dSpaceID get_phys_space() { return m_space; }
         void add(object_phys * op);
+        static void possible_collision_clbk(void * data, dGeomID g0, dGeomID g1);
     protected:
-        std::list<object_phys *> m_pobjects;
-        dWorldID    m_world;
-        dSpaceID    m_space;
-        dJointID    m_2d_plane;
+        std::list<object_phys *>    m_pobjects;
+        dWorldID                    m_world;
+        dSpaceID                    m_space;
+        dJointID                    m_2d_plane;
+        dJointGroupID               m_contact_joints;
 };
 
 
