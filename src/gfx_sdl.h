@@ -20,6 +20,7 @@ class gfx_SDL : public gfx
 		virtual void init();
         virtual void update();
         virtual void draw();
+        virtual void clear();
         virtual uint32_t get_width();
         virtual uint32_t get_height();
         SDL_Surface * get_ctx()

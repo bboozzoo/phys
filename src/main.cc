@@ -28,12 +28,12 @@ int main (int argc, char * argv[]) {
 
     LOG(1, "init system");
     sys::system * sys = sys::system::init(sys::INIT_GFX | sys::INIT_INPUT);
-    LOG(1, "init simulation");
+    LOG(1, "init prog");
     prog p(sys);
-    LOG(1, "setup simulation objects");
-    LOG(1, "run simulation");
-    sim.run();
-    LOG(1, "simulation finished, cleanup");
+    LOG(1, "setup objects");
+    LOG(1, "run");
+    p.run();
+    LOG(1, "finished, cleanup");
     sys::system::finish();
     LOG(1, "all done");
 	return 0;

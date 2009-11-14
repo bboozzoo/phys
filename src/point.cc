@@ -1,42 +1,40 @@
+#include <SDL/SDL_gfxPrimitives.h>
+#include "world.h"
 #include "point.h"
 #include "log.h"
+#include "conf.h"
+#include "gfx_sdl.h"
 
-namespace phys 
-{
 
-point::point(double mass, double x, double y, double z)
-    : m_mass(mass), m_velocity(2)
+point::point(world * w, double mass, double x, double y, double z)
+    : object_phys(w, object::SPHERE)
 {
-    validate_mass(); 
-    pos_t & p = m_vertices[0];
-    p.resize(2);
+    pos_t p(3);
     p(0) = x;
     p(1) = y;
+    p(2) = z;
 
-    m_velocity(0) = 0;
-    m_velocity(1) = 0;
-
-    LOG(1, "m: " << m_mass << " p: " << m_vertices[0] << " v: " << m_velocity);
+    LOG(1, "creating point mass: " << mass << " pos: " << p);
+    dimensions_t d(1);
+    d[0] = 1.0;
+    set_geometry(d);
+    set_position(p);
+    set_density(DENSITY);
 }
 
-point::point(double mass, pos_t pos, vector_t vel)
-    : m_mass(mass), m_velocity(vel)
-{
-    validate_mass();
-    m_vertices[0] = pos;
-    LOG(1, "m: " << m_mass << " p: " << m_vertices[0] << " v: " << m_velocity);
-}
 
 point::~point()
 {
 }
 
 void
-point::validate_mass()
+point::draw(sys::gfx * gfx, coord * c)
 {
-    if (m_mass == 0)
-        m_mass = 1.0;
-    m_1_over_mass = 1.0/m_mass;
+    sys::gfx_SDL * g = dynamic_cast<sys::gfx_SDL*>(gfx);
+    SDL_Surface * surf = g->get_ctx();
+    pos_t v(3);
+    get_position(v);
+    c->translate_inside(v, coord::TO_SCREEN);
+    filledCircleColor(surf, v(0), v(1), 1, sys::color::WHITE);
 }
 
-}

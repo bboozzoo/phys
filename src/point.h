@@ -1,45 +1,17 @@
 #ifndef __POINT_H__
 #define __POINT_H__
-#include "object.h"
+#include "object_phys.h"
+#include "drawable.h"
 
-namespace phys {
+class world;
 
-class point : public simobject<SIMOBJECT_POINT, 1>
+class point : public object_phys, public drawable
 {
 	public:
-		point(double mass, double x, double y, double z = 0);
-		point(double mass, pos_t pos, vector_t vel);
+		point(world * w, double mass, double x, double y, double z = 0);
 		virtual ~point();
-		vertex_t & get_pos()
-		{
-		    return m_vertices[0];
-		}
-		vector_t & get_velocity()
-		{
-		    return m_velocity;
-		}
-		double get_1_over_mass()
-		{
-		    return m_1_over_mass;
-		}
-		double get_mass()
-		{
-		    return m_mass;
-		}
-        double distance(const pos_t & p)
-        {
-            return 0.0;
-        }
-        bool is_collision(const pos_t & p)
-        {
-            return false;
-        }
+        void draw(sys::gfx * gfx, coord * c);
 	private:
-        void validate_mass();
-		double      m_mass;
-		double      m_1_over_mass;
-		vector_t    m_velocity;
 };
 
-}
 #endif /* __POINT_H__ */

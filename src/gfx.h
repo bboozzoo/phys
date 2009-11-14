@@ -1,5 +1,6 @@
 #ifndef __GFX_H__
 #define __GFX_H__
+#include <cstdint>
 
 namespace sys
 {
@@ -26,6 +27,7 @@ class gfx
 		virtual void init() = 0;
         virtual void update() = 0;
         virtual void draw() = 0;
+        virtual void clear() = 0;
         virtual uint32_t get_width() = 0;
         virtual uint32_t get_height() = 0;
 

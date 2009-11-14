@@ -3,6 +3,7 @@
 #include <list>
 #include "system.h"
 #include "coord.h"
+#include "world.h"
 #if 0
 #include "point.h"
 #include "plane.h"
@@ -18,6 +19,11 @@ class prog
     private:
         struct user_input_state
         {
+            user_input_state() 
+                : m_last_click_pos(2), m_last_click_valid(false)
+            {}
+            ~user_input_state()
+            {}
             pos_t m_last_click_pos;
             bool m_last_click_valid;
         };
@@ -36,10 +42,15 @@ class prog
 
         void loop();
         void handle_input();
+        void finish();
+#if 0
         void add_point(pos_t & initial_position, vector_t & initial_velocity);
+#endif
 
-        sys::system         m_sys; /* system, gfx, input etc. */
+        sys::system *       m_sys; /* system, gfx, input etc. */
+#if 0
         std::list<point *>  m_points;
+#endif
         world *             m_world;
         double              m_time; /* time bookkeeping */
         coord               m_coord; /* coordinate translation */

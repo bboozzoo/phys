@@ -6,8 +6,11 @@
 class world_gfx : public drawable
 {
     public:
-        void draw(sys::gfx * gfx);
-    private:
+        world_gfx();
+        virtual ~world_gfx();
+        void draw(sys::gfx * gfx, coord * c);
+        void add(drawable * og); 
+    protected:
         std::list<drawable *> m_gobjects;
 };
 

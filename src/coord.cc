@@ -3,9 +3,6 @@
 #include "gfx_sdl.h"
 #include "log.h"
 
-namespace phys
-{
-    
 coord::coord()
     : m_width(0), m_height(0), m_sc_width(0), m_sc_height(0),
       m_offs(2)
@@ -63,14 +60,18 @@ coord::translate_inside(pos_t & v, translation_type_t type)
 }
 
 void
-coord::draw(sys::gfx * g) 
+coord::draw(sys::gfx * g, coord * c) 
 {
+    if (c != this) {
+        LOG(1, "coordinate system mismatch");
+        return;
+    }
     hline(g);
     vline(g);
 }
 
 void
-coord::hline(gfx * g)
+coord::hline(sys::gfx * g)
 {
     pos_t point1(2);
     pos_t point2(2);
@@ -95,7 +96,7 @@ coord::hline(gfx * g)
 }
 
 void
-coord::vline(gfx * g) 
+coord::vline(sys::gfx * g) 
 {
     pos_t point1(2);
     pos_t point2(2);
@@ -118,7 +119,7 @@ coord::vline(gfx * g)
 }
 
 void 
-coord::ticks(gfx * g) 
+coord::ticks(sys::gfx * g) 
 {
 /*
     ublas::vector<double> point1(2);
@@ -133,11 +134,11 @@ coord::ticks(gfx * g)
 }
 
 void 
-coord::line(gfx * g, vertex_t & start, vertex_t & end, line_type_t t)
+coord::line(sys::gfx * g, vertex_t & start, vertex_t & end, line_type_t t)
 {
     try 
     {
-        gfx_SDL * gf = dynamic_cast<gfx_SDL*>(g);
+        sys::gfx_SDL * gf = dynamic_cast<sys::gfx_SDL*>(g);
         SDL_Surface * surf = gf->get_ctx();  
         LOG(4, "line " << ((t == LINE_H) ? "H" : "V") << " before start: " << start << " point 2: " << end);
         translate_inside(start);
@@ -165,4 +166,3 @@ coord::visible(pos_t & v)
     return false;
 }
 
-}

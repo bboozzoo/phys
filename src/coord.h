@@ -1,9 +1,9 @@
 #ifndef __COORD_H__
 #define __COORD_H__
 #include <boost/numeric/ublas/vector.hpp>
-#include "bin.h"
 #include "gfx.h"
 #include "object.h"
+#include "object_types.h"
 #include "drawable.h"
 
 using namespace boost::numeric;
@@ -22,7 +22,7 @@ class coord : public drawable
         void init(double width, double height, double sc_width, double sc_height);
         pos_t translate(pos_t & p, translation_type_t type = TO_SCREEN);
         void translate_inside(pos_t & p, translation_type_t type = TO_SCREEN);
-        void draw(sys::gfx * g);
+        void draw(sys::gfx * g, coord * c);
         bool visible(pos_t & p);
 	private:
         typedef enum {
@@ -30,10 +30,10 @@ class coord : public drawable
             LINE_V,
         } line_type_t;
 
-        void hline(gfx * g);
-        void vline(gfx * g);
-        void line(gfx * g, vertex_t & start, vertex_t & end, line_type_t t);
-        void ticks(gfx * g);
+        void hline(sys::gfx * g);
+        void vline(sys::gfx * g);
+        void line(sys::gfx * g, vertex_t & start, vertex_t & end, line_type_t t);
+        void ticks(sys::gfx * g);
 
         double          m_width;
         double          m_height;

@@ -1,14 +1,10 @@
-#include <SDL/SDL.h>
-#include <SDL/SDL_gfxPrimitives.h>
 #include "system.h"
 #include "prog.h"
-#include "plane.h"
 #include "gfx_sdl.h"
 #include "event.h"
 #include "log.h"
-
-namespace phys
-{
+#include "point.h"
+#include "conf.h"
 
 prog::prog(sys::system * sys)
     : m_sys(sys)
@@ -33,47 +29,59 @@ prog::~prog()
 void 
 prog::run()
 {
-    double t_delta = 0;
+
+    m_world->setup();
 
     m_state.m_run = true;
     /* init time */
     m_time = ((double) m_sys->get_input()->get_ticks()) / 1000.0;
-    
+    LOG(2, "time start: " << m_time << "s");    
     while(m_state.m_run)
     {
         loop();
-        double now = 0;
+    }
+    finish();
+}
 
-        handle_input();
+void 
+prog::loop()
+{
+    double t_delta = 0;
+    double now = 0;
 
-        now = ((double) m_sys->get_input()->get_ticks()) / 1000.0;
-        t_delta = now - m_time;
-        LOG(2, "delta: : " << t_delta << "ms, now: " << now << "ms, prev: " << m_time << "ms");
+    handle_input();
 
-        world->advance(t_delta);
-        m_coord.draw(m_sys->get_gfx());
-        world->draw(m_sys->get_gfx());
+    now = ((double) m_sys->get_input()->get_ticks()) / 1000.0;
+    t_delta = now - m_time;
+    LOG(2, "delta: : " << t_delta << "ms, now: " << now << "s, prev: " << m_time << "s");
+
+    if (t_delta > STEP_SIZE) {
+        m_world->advance(t_delta);
+        m_time = now;
+    }
+    m_sys->get_gfx()->clear();
+    m_coord.draw(m_sys->get_gfx(), &m_coord);
+    m_world->draw(m_sys->get_gfx());
 
 #if 0
-        if (t_delta >= 0.001) 
+    if (t_delta >= 0.001) 
+    {
+        if (!m_state.m_paused) 
         {
-            if (!m_state.m_paused) 
+            LOG(2, "--- update ---");
+            /* temporary fix for t_delta too large */
+            while (t_delta > 0.01)
             {
-                LOG(2, "--- update ---");
-                /* temporary fix for t_delta too large */
-                while (t_delta > 0.01)
-                {
-                    calc(0.005);
-                    t_delta -= 0.005;
-                }
-                calc(t_delta);
+                calc(0.005);
+                t_delta -= 0.005;
             }
-            m_time = now;
+            calc(t_delta);
         }
-        draw();
-#endif
-        m_gfx->update();
+        m_time = now;
     }
+    draw();
+#endif
+    m_sys->get_gfx()->update();
 }
 
 void
@@ -81,14 +89,14 @@ prog::handle_input()
 {
     event ev;
 
-    m_input->poll(ev);
+    m_sys->get_input()->poll(ev);
     switch(ev.get_type())
     {
         case event::QUIT:
+            LOG(1, "event quit");
             m_state.m_run = false;
             break;
         case event::MOUSE_BUTTON_DOWN: 
-            LOG(1, "down");
         case event::MOUSE_BUTTON_UP:
             {
                 LOG(1, "mouse button event " << ((ev == event::MOUSE_BUTTON_DOWN) ? "down" : "up") <<  " p: " << m_input_state.m_last_click_pos << " valid: " << m_input_state.m_last_click_valid);
@@ -108,7 +116,7 @@ prog::handle_input()
                     else if (m_input_state.m_last_click_valid == true)
                     {
                         vector_t initial_velocity = p - m_input_state.m_last_click_pos;
-                        add_point(m_input_state.m_last_click_pos, initial_velocity);
+                        /*add_point(m_input_state.m_last_click_pos, initial_velocity);*/
                         m_input_state.m_last_click_valid = false;
                     }
                 }
@@ -148,7 +156,7 @@ prog::handle_input()
     }
 
 }
-
+#if 0
 void 
 prog::draw() 
 {
@@ -311,16 +319,20 @@ prog::add_point(pos_t & initial_position, vector_t & initial_velocity)
         throw;
     }
 }
-
+#endif
 void 
 prog::finish() 
 {
+    if (m_world != NULL)
+        delete m_world;
+
+#if 0
     while (!m_points.empty())
     {
         std::list<point*>::iterator it = m_points.begin();
         delete (*it);
         m_points.erase(it);
     }
+#endif
 }
 
-}

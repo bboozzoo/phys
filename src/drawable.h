@@ -2,10 +2,11 @@
 #define __DRAWABLE_H__
 #include "gfx.h"
 
+class coord;
 class drawable 
 {
     public:
-        void draw(sys::gfx * gfx) = 0;
+        virtual void draw(sys::gfx * gfx, coord * c) = 0;
 
 };
 #endif /* __DRAWABLE_H__ */

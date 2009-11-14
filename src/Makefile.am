@@ -1,17 +1,17 @@
 bin_PROGRAMS = phys
 phys_SOURCES = main.cc \
-			   bin.cc \
 			   system.cc \
 			   gfx_sdl.cc \
 			   input_sdl.cc \
 			   prog.cc \
-			   point.cc \
 			   coord.cc \
 			   log.cc \
-			   plane.cc \
 			   event.cc \
 			   world.cc \
-			   object_phys.cc
+			   world_gfx.cc \
+			   world_phys.cc \
+			   object_phys.cc \
+			   point.cc
 
 phys_CXXFLAGS = $(LIBSDL_CFLAGS) \
 				$(BOOST_CPPFLAGS) \

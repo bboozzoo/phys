@@ -8,8 +8,10 @@ class world : public world_phys, public world_gfx
 {
     public:
         world(coord & coordinate_sys);
-        advance(double delta_t);
-        draw(sys::gfx * gfx);
+        ~world();
+        void advance(double delta_t);
+        void draw(sys::gfx * gfx);
+        void setup();
     private:
         coord *     m_coord;
 

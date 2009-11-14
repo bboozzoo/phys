@@ -48,6 +48,11 @@ void gfx_SDL::draw()
 
 }
 
+void gfx_SDL::clear() 
+{
+    boxColor(m_surface, 0, 0, m_surface->w - 1, m_surface->h - 1, sys::color::BLACK);
+}
+
 uint32_t gfx_SDL::get_width()
 {
     return m_surface->w;

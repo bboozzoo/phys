@@ -1,9 +1,6 @@
 #include <cstdlib>
 #include "event.h"
 
-namespace phys
-{
-
 
 event::event()
     : m_type(NONE)
@@ -60,5 +57,4 @@ event::clear()
 }
 
 
-}
 

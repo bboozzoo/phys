@@ -6,10 +6,10 @@
 #include "input_sdl.h"
 #include "log.h"
 
-namespace phys 
+namespace sys
 {
 
-sys::system * system::m_sys_single = NULL;
+system * system::m_sys_single = NULL;
 
 system::system(uint32_t sys_init_flags) 
 {
@@ -34,6 +34,11 @@ system::system(uint32_t sys_init_flags)
         std::cerr << "exception" << e.what() << std::endl;
         throw;
     }
+}
+
+system::~system()
+{
+
 }
 
 system * system::init(uint32_t sys_init_flags) 

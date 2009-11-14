@@ -1,30 +1,24 @@
-#ifndef __SIMOBJECT_H__
-#define __SIMOBJECT_H__
-#include <boost/array.hpp>
-
+#ifndef __OBJECT_H__
+#define __OBJECT_H__
+#include "object_phys.h"
 #if 0
-typedef enum
-{
-    SIMOBJECT_POINT,
-    SIMOBJECT_PLANE,
-} simobject_type_t;
-
-template <simobject_type_t obj_type, size_t vertex_cnt>
-class simobject
+class object_sim : public object_phys
 {
     public:
 
-        simobject()
-            : m_type(obj_type)
+        object(object::type_t type)
+            : m_type(type)
         {
         }
-        ~simobject()
+        virtual ~object()
         {
         }
     protected:
-        boost::array<vertex_t, vertex_cnt>  m_vertices;
-        simobject_type_t                    m_type;
+};
+
+class object_drawable : public drawable
+{
+
 };
 #endif
-
-#endif /* __SIMOBJECT_H__ */
+#endif /* __OBJECT_H__ */
