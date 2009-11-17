@@ -74,6 +74,8 @@ world_phys::possible_collision_clbk(void * data, dGeomID g0, dGeomID g1)
     {
         dJointID contact_joint = dJointCreateContact(w->m_world, w->m_contact_joints, &contacts[0]);
         dJointAttach(contact_joint, dGeomGetBody(g0), dGeomGetBody(g1));
+        o0->set_in_collision(true);
+        o1->set_in_collision(true);
     }   
 }
 

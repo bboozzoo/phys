@@ -33,9 +33,11 @@ sphere::draw(sys::gfx * gfx, coord * c)
 {
     sys::gfx_SDL * g = dynamic_cast<sys::gfx_SDL*>(gfx);
     SDL_Surface * surf = g->get_ctx();
+//    uint32_t col = (get_in_collision() == true) ? sys::color::ORANGE : m_color.get_value();
     pos_t v(3);
     get_position(v);
     c->translate_inside(v, coord::TO_SCREEN);
-    filledCircleColor(surf, v(0), v(1), m_radius, sys::color::WHITE);
+    filledCircleColor(surf, v(0), v(1), m_radius, m_color.get_value());
+//    set_in_collision(false);
 }
 

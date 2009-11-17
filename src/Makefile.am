@@ -14,7 +14,9 @@ phys_SOURCES = main.cc \
 			   point.cc \
 			   sphere.cc \
 			   box.cc \
-			   plane.cc
+			   plane.cc \
+			   drawable.cc \
+			   color.cc
 
 phys_CXXFLAGS = $(LIBSDL_CFLAGS) \
 				$(BOOST_CPPFLAGS) \

@@ -33,28 +33,36 @@ world::setup()
     LOG(1, "world setup");
     /* static configuration */
     for (int i = 0; i < 5; i++) {
+        sys::color col(sys::color::BLUE);
         sphere * p = new sphere(this, 50, 5, (double) (i % 10) * 11.0 , -100 + (i % 10) * 10, 0);
+        p->set_color(col);
         world_gfx::add(p);
         world_phys::add(p);
     }
     for (int i = 0; i < 5; i++) {
+        sys::color col(sys::color::WHITE);
         sphere * p = new sphere(this, 0.005, 5, 5 + (double) (i % 10) * 11.0 , -50 + (i % 10) * 10, 0);
+        p->set_color(col);
         world_gfx::add(p);
         world_phys::add(p);
     }
     for (int i = 0; i < 5; i++) {
+        sys::color col(sys::color::GREEN);
         sphere * p = new sphere(this, 150, 5, (double) (i % 10) * 11.0 , 0 + (i % 10) * 10, 0);
+        p->set_color(col);
         world_gfx::add(p);
         world_phys::add(p);
     }
 
+    sys::color col(sys::color::RED);
     vertex_t n(3);
     plane * pl;
 #if 1
     n[0] = 0;
     n[1] = 1;
     n[2] = 0;
-    pl = new plane(this, n, 199);
+    pl = new plane(this, n, 299);
+    pl->set_color(col);
     world_gfx::add(pl);
     world_phys::add(pl);
 #endif
@@ -63,6 +71,7 @@ world::setup()
     n[1] = 0;
     n[2] = 0;
     pl = new plane(this, n, 399);
+    pl->set_color(col);
     world_gfx::add(pl);
     world_phys::add(pl);
 #endif
@@ -71,6 +80,7 @@ world::setup()
     n[1] = 0;
     n[2] = 0;
     pl = new plane(this, n, 399);
+    pl->set_color(col);
     world_gfx::add(pl);
     world_phys::add(pl);
 #endif

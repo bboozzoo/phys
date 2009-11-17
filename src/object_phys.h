@@ -17,6 +17,8 @@ class object_phys : public object_base
         void get_position(pos_t & pos);
         dBodyID get_body() { return m_body; }
         dGeomID get_geom() { return m_geom; }
+        void set_in_collision(bool val) { m_in_collision = val; }
+        bool get_in_collision() { return m_in_collision; }
     private:
 
         dBodyID         m_body; /* body descriptor */
@@ -24,6 +26,7 @@ class object_phys : public object_base
         dimensions_t    m_dim;
         pos_t           m_pos;
         world_phys *    m_world;
+        bool            m_in_collision;
 };
 
 #endif /* __OBJECT_PHYS_H__ */
