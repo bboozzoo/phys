@@ -62,7 +62,7 @@ world_phys::possible_collision_clbk(void * data, dGeomID g0, dGeomID g1)
     world_phys * w = reinterpret_cast<world_phys *>(data);
     LOG(2, "collision? g0: " << (void *) o0 << " g1: " << (void *) o1);
     dContact contacts[1];
-    contacts[0].surface.mode = dContactBounce | dContactSoftCFM;
+    contacts[0].surface.mode = dContactBounce;
     contacts[0].surface.mu = 0;
     contacts[0].surface.mu2 = 0;
     contacts[0].surface.bounce = 0.8;

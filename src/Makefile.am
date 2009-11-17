@@ -12,6 +12,8 @@ phys_SOURCES = main.cc \
 			   world_phys.cc \
 			   object_phys.cc \
 			   point.cc \
+			   sphere.cc \
+			   box.cc \
 			   plane.cc
 
 phys_CXXFLAGS = $(LIBSDL_CFLAGS) \

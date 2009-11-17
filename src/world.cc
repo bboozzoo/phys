@@ -32,8 +32,18 @@ world::setup()
 {
     LOG(1, "world setup");
     /* static configuration */
-    for (int i = 0; i < 10; i++) {
-        point * p = new point(this, 1, 0 + (double) (i % 400)/2.0, -200 + (i % 400), 0);
+    for (int i = 0; i < 5; i++) {
+        sphere * p = new sphere(this, 50, 5, (double) (i % 10) * 11.0 , -100 + (i % 10) * 10, 0);
+        world_gfx::add(p);
+        world_phys::add(p);
+    }
+    for (int i = 0; i < 5; i++) {
+        sphere * p = new sphere(this, 0.005, 5, 5 + (double) (i % 10) * 11.0 , -50 + (i % 10) * 10, 0);
+        world_gfx::add(p);
+        world_phys::add(p);
+    }
+    for (int i = 0; i < 5; i++) {
+        sphere * p = new sphere(this, 150, 5, (double) (i % 10) * 11.0 , 0 + (i % 10) * 10, 0);
         world_gfx::add(p);
         world_phys::add(p);
     }
@@ -44,7 +54,7 @@ world::setup()
     n[0] = 0;
     n[1] = 1;
     n[2] = 0;
-    pl = new plane(this, n, 299);
+    pl = new plane(this, n, 199);
     world_gfx::add(pl);
     world_phys::add(pl);
 #endif
