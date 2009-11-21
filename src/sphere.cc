@@ -8,9 +8,9 @@ sphere::sphere(world * w, double mass, double radius, double x, double y, double
     : object_phys(w, object::SPHERE), m_radius(radius)
 {
     pos_t p(3);
-    p(0) = x;
-    p(1) = y;
-    p(2) = z;
+    p[0] = x;
+    p[1] = y;
+    p[2] = z;
 
     dimensions_t d(1);
     d[0] = radius;
@@ -37,7 +37,7 @@ sphere::draw(sys::gfx * gfx, coord * c)
     pos_t v(3);
     get_position(v);
     c->translate_inside(v, coord::TO_SCREEN);
-    filledCircleColor(surf, v(0), v(1), m_radius, m_color.get_value());
+    filledCircleColor(surf, v[0], v[1], m_radius, m_color.get_value());
 //    set_in_collision(false);
 }
 

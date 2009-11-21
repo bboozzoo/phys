@@ -63,10 +63,10 @@ world_phys::possible_collision_clbk(void * data, dGeomID g0, dGeomID g1)
     LOG(2, "collision? g0: " << (void *) o0 << " g1: " << (void *) o1);
     dContact contacts[1];
     contacts[0].surface.mode = dContactBounce;
-    contacts[0].surface.mu = 0;
+    contacts[0].surface.mu = dInfinity;
     contacts[0].surface.mu2 = 0;
     contacts[0].surface.bounce = 0.8;
-    contacts[0].surface.bounce_vel = 0.001;
+    contacts[0].surface.bounce_vel = 0.01;
     contacts[0].surface.soft_cfm = 0.01;
     int contact_cnt = dCollide(g0, g1, 1, &contacts[0].geom, sizeof(dContact));
     LOG(2, "contacts: " << contact_cnt);

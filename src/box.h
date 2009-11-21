@@ -8,7 +8,7 @@ class world;
 class box : public object_phys, public drawable
 {
 	public:
-		box(world * w, double mass, double x, double y, double z = 0);
+		box(world * w, double mass, double width, double height, double x, double y, double z = 0);
 		virtual ~box();
         virtual void draw(sys::gfx * gfx, coord * c);
 };

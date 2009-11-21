@@ -13,6 +13,7 @@ class object_phys : public object_base
         virtual ~object_phys();
         void set_density(double density);
         void set_geometry(dimensions_t & dim);
+        void get_geometry(dimensions_t & dim);
         void set_position(pos_t & pos);
         void get_position(pos_t & pos);
         dBodyID get_body() { return m_body; }

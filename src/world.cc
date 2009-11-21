@@ -1,6 +1,7 @@
 #include "world.h"
 #include "log.h"
-#include "point.h"
+#include "sphere.h"
+#include "box.h"
 #include "plane.h"
 
 world::world(coord & coord_sys)
@@ -31,6 +32,7 @@ void
 world::setup()
 {
     LOG(1, "world setup");
+#if 1
     /* static configuration */
     for (int i = 0; i < 5; i++) {
         sys::color col(sys::color::BLUE);
@@ -53,7 +55,18 @@ world::setup()
         world_gfx::add(p);
         world_phys::add(p);
     }
-
+#endif
+#if 0
+    {
+        for (int i = 0; i < 12; i++) {
+            sys::color col(sys::color::ORANGE);
+            box * b = new box(this, 0.005, 5, 20, 150 + i * 2, -100 + i * 25, 0);
+            b->set_color(col);
+            world_gfx::add(b);
+            world_phys::add(b);
+        }
+    }
+#endif
     sys::color col(sys::color::RED);
     vertex_t n(3);
     plane * pl;

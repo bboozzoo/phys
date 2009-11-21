@@ -95,3 +95,10 @@ object_phys::get_position(pos_t & pos)
     pos = m_pos; 
 }
 
+void 
+object_phys::get_geometry(dimensions_t & dim) 
+{ 
+    LOG(2, "object at: " << (void *) this << " dimensions: " << m_dim);
+    dim = m_dim; 
+}
+
