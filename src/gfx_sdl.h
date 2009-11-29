@@ -36,6 +36,9 @@ class gfx_SDL : public gfx
             uint32_t    last_calc_time; 
             char        rate_buf[FRAMERATE_BUF_LEN];
         };
+
+        void    initGL();
+
 		SDL_Surface *   m_surface;
         frame_rate      m_framerate;
 };

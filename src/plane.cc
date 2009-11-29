@@ -66,9 +66,11 @@ plane::get_normal()
 void 
 plane::draw(sys::gfx * gfx, coord * c) 
 {
+#if 0
     sys::gfx_SDL * g = dynamic_cast<sys::gfx_SDL*>(gfx);
     SDL_Surface * surf = g->get_ctx();
     lineColor(surf, m_p[0][0], m_p[0][1], m_p[1][0], m_p[1][1], m_color.get_value());
+#endif
 }
 
 

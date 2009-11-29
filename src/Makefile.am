@@ -19,10 +19,12 @@ phys_SOURCES = main.cc \
 			   color.cc
 
 phys_CXXFLAGS = $(LIBSDL_CFLAGS) \
+				$(OPENGL_CFLAGS) \
 				$(BOOST_CPPFLAGS) \
 				$(ODE_CFLAGS)
 phys_LDFLAGS = $(LIBSDL_LIBS) \
 			   $(LIBSDLGFX_LIBS) \
+			   $(OPENGL_LIBS) \
 			   $(BOOST_LDFLAGS) \
 			   $(BOOST_PROGRAM_OPTIONS_LIB) \
 			   $(ODE_LIBS)

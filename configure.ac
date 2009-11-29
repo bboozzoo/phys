@@ -33,6 +33,10 @@ AC_SUBST([LIBSDL_CFLAGS], ["$libsdl_CFLAGS"])
 AC_SUBST([LIBSDL_LIBS], ["$libsdl_LIBS"])
 AC_SUBST([LIBSDLGFX_LIBS])
 
+PKG_CHECK_MODULES([libgl], [gl])
+AC_SUBST([OPENGL_CFLAGS], ["$libgl_CFLAGS"])
+AC_SUBST([OPENGL_LIBS], ["$libgl_LIBS"])
+
 AC_CHECK_PROGS([ODE_CONFIG], [ode-config], [])
 if test -z "$ODE_CONFIG"; then
     AC_MSG_ERROR([ode-config not found])

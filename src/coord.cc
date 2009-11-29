@@ -62,12 +62,14 @@ coord::translate_inside(pos_t & v, translation_type_t type)
 void
 coord::draw(sys::gfx * g, coord * c) 
 {
+#if 0
     if (c != this) {
         LOG(1, "coordinate system mismatch");
         return;
     }
     hline(g);
     vline(g);
+#endif
 }
 
 void

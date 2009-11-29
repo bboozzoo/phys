@@ -32,7 +32,7 @@ void
 world::setup()
 {
     LOG(1, "world setup");
-#if 1
+#if 0
     /* static configuration */
     for (int i = 0; i < 5; i++) {
         sys::color col(sys::color::BLUE);
@@ -56,7 +56,7 @@ world::setup()
         world_phys::add(p);
     }
 #endif
-#if 0
+#if 1
     {
         for (int i = 0; i < 12; i++) {
             sys::color col(sys::color::ORANGE);
